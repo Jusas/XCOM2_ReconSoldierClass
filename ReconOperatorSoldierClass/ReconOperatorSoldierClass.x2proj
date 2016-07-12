@@ -29,6 +29,9 @@
     <Content Include="Config\XComGameData_SoldierSkills.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComGameData_WeaponData.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
@@ -36,6 +39,9 @@
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Item_Carbine.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_SituationalAwarenessCondition.uc">

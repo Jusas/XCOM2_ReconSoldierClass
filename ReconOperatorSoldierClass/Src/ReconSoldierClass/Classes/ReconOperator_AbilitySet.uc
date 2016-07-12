@@ -8,7 +8,9 @@ class ReconOperator_AbilitySet extends X2Ability
 // Configuration variables.
 // -----------------------------------------------------------------------------------------------------
 
-var config int LIGHTFEET_MOBILITY; // Mobility bonus granted by Light Feet
+var config int RECON_LIGHTFEET_MOBILITY; // Mobility bonus granted by Light Feet
+var config int RECON_LIGHTFEET_DETECTION_BONUS; // Mobility bonus granted by Light Feet
+var config int RECON_CARBINE_MOBILITY_BONUS; // Mobility bonus given by the Carbine weapon
 
 
 // -----------------------------------------------------------------------------------------------------
@@ -26,6 +28,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddSituationalAwarenessAbility() );
 	Templates.AddItem( AddSituationalAwarenessWatcher() );
 	Templates.AddItem( AddSituationalAwarenessReaction() );
+
+	Templates.AddItem( AddCarbineBonusAbility() );
+
 	return Templates;
 
 }
@@ -57,7 +62,8 @@ static function X2AbilityTemplate AddLightFeetAbility()
 	PersistentStatChangeEffect.EffectName = 'ReconLightFeet';
 	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false);
 	PersistentStatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,,Template.AbilitySourceName);
-	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.LIGHTFEET_MOBILITY);
+	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.RECON_LIGHTFEET_MOBILITY);
+	PersistentStatChangeEffect.AddPersistentStatChange(eStat_DetectionModifier, default.RECON_LIGHTFEET_DETECTION_BONUS);
 	PersistentStatChangeEffect.DuplicateResponse = eDupe_Ignore;
 	Template.AddTargetEffect(PersistentStatChangeEffect);		
 
@@ -384,7 +390,38 @@ static function EventListenerReturn SituationalAwarenessScamperListener(Object E
 	return ELR_NoInterrupt;
 }
 
+// -----------------------------------------------------------------------------------------------------
+// Recon Carbine bonus abilities
+// -----------------------------------------------------------------------------------------------------
 
+static function X2AbilityTemplate AddCarbineBonusAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_PersistentStatChange		PersistentStatChangeEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconCarbineStatBonus');
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_dash"; 
+
+	Template.AbilitySourceName = 'eAbilitySource_Item';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.bDisplayInUITacticalText = false;
+	
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	
+	// Bonus to Mobility
+	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
+	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
+	PersistentStatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, "", "", Template.IconImage, false,,Template.AbilitySourceName);
+	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.RECON_CARBINE_MOBILITY_BONUS);
+	Template.AddTargetEffect(PersistentStatChangeEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;	
+}
 
 
 
