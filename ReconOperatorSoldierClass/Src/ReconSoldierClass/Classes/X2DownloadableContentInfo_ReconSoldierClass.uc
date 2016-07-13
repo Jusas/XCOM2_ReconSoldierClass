@@ -113,4 +113,7 @@ defaultproperties
 	ReconWeaponTemplateNames(0)="ReconCarbine_CV"
 	ReconWeaponTemplateNames(1)="ReconCarbine_MG"
 	ReconWeaponTemplateNames(2)="ReconCarbine_BM"
+	ReconWeaponTemplateNames(3)="ReconMarksmanRifle_CV"
+	ReconWeaponTemplateNames(4)="ReconMarksmanRifle_MG"
+	ReconWeaponTemplateNames(5)="ReconMarksmanRifle_BM"
 }

@@ -10,7 +10,6 @@ class ReconOperator_AbilitySet extends X2Ability
 
 var config int RECON_LIGHTFEET_MOBILITY; // Mobility bonus granted by Light Feet
 var config int RECON_LIGHTFEET_DETECTION_BONUS; // Mobility bonus granted by Light Feet
-var config int RECON_CARBINE_MOBILITY_BONUS; // Mobility bonus given by the Carbine weapon
 
 
 // -----------------------------------------------------------------------------------------------------
@@ -28,8 +27,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddSituationalAwarenessAbility() );
 	Templates.AddItem( AddSituationalAwarenessWatcher() );
 	Templates.AddItem( AddSituationalAwarenessReaction() );
-
-	Templates.AddItem( AddCarbineBonusAbility() );
+	Templates.AddItem( AddMarksmanSpecializationAbility() );
 
 	return Templates;
 
@@ -390,38 +388,43 @@ static function EventListenerReturn SituationalAwarenessScamperListener(Object E
 	return ELR_NoInterrupt;
 }
 
+
 // -----------------------------------------------------------------------------------------------------
-// Recon Carbine bonus abilities
+// Marksman Rifle specialization ability, which removes standard penalties of the Marksman Rifle.
 // -----------------------------------------------------------------------------------------------------
 
-static function X2AbilityTemplate AddCarbineBonusAbility()
+static function X2AbilityTemplate AddMarksmanSpecializationAbility()
 {
-	local X2AbilityTemplate                 Template;	
-	local X2Effect_PersistentStatChange		PersistentStatChangeEffect;
+	local X2AbilityTemplate                 Template;
+	local X2Effect_Persistent				PersistentEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconCarbineStatBonus');
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_dash"; 
-
-	Template.AbilitySourceName = 'eAbilitySource_Item';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.bDisplayInUITacticalText = false;
+	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconMarksmanSpecialization' );
 	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_scope";
+
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	
-	// Bonus to Mobility
-	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
-	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
-	PersistentStatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, "", "", Template.IconImage, false,,Template.AbilitySourceName);
-	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.RECON_CARBINE_MOBILITY_BONUS);
-	Template.AddTargetEffect(PersistentStatChangeEffect);
+	// Just a persistent dummy effect to display that this ability is indeed active.
+	// The real effect is attached to the Marksman Rifle and it just checks the presence
+	// of this ability in order to not apply the penalty effects.
+	PersistentEffect = new class'X2Effect_Persistent';
+	PersistentEffect.EffectName = 'ReconMarksmanSpecialization';
+	PersistentEffect.BuildPersistentEffect(1, true, true, false);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(PersistentEffect);		
+
+	// Not an AWC skill.
+	Template.bCrossClassEligible = false;
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
 
-	return Template;	
+	`log("[ReconOperator]-> Marksman Rifle Specialization Ability template created");
+
+	return Template;
 }
-
-
-

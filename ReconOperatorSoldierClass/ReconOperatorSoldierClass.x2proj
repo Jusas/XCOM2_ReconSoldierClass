@@ -44,10 +44,19 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Item_Carbine.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Item_MarksmanRifle.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_SituationalAwarenessCondition.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_TestEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_WeaponAbilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\X2Condition_UnitDoesNotHaveAbility.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\X2DownloadableContentInfo_ReconSoldierClass.uc" />
