@@ -13,9 +13,11 @@ event name CallMeetsCondition(XComGameState_BaseObject kTarget) {
 	AbilityRef = TargetUnit.FindAbility(OwnerDoesNotHaveSoldierAbility);
 	if(AbilityRef.ObjectID == 0)
 	{
+		`log("[ReconOperator]-> Unit " $ TargetUnit.GetFullName() $ " does not have ability " $ OwnerDoesNotHaveSoldierAbility $ ", AA_SUCCESS");
 		return 'AA_Success';
 	}
 
-	return 'AA_Failure';
+	`log("[ReconOperator]-> Unit " $ TargetUnit.GetFullName() $ " does really have the ability " $ OwnerDoesNotHaveSoldierAbility $ ", AA_FAIL");
+	return 'AA_NotAUnit';
 	
 }

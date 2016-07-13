@@ -131,30 +131,42 @@ static function X2AbilityTemplate AddSituationalAwarenessWatcher()
 {
 	local X2AbilityTemplate                 Template;
 	local X2AbilityTrigger_EventListener    ScamperListener;
+	local ReconOperator_ScamperWatchEffect  ScamperWatchEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconSituationalAwarenessWatcher');
 
 	// Basic conditions.
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityTargetStyle = default.SelfTarget;
+
+	// Triggers immediately, and registers listeners. A fucked up fix for a fucked up problem.
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	ScamperWatchEffect = new class'ReconOperator_ScamperWatchEffect';
+	Template.AddShooterEffect(ScamperWatchEffect);
 	
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 	Template.AbilitySourceName = 'eAbilitySource_Perk';	
 	Template.Hostility = eHostility_Offensive;
 
+	
+
 	// The trigger for this ability is 'ScamperBegin', ie. when the aliens start to scamper.
 	// SituationalAwarenessScamperListener then triggers the activation of the Ability.
 
-	ScamperListener = new class'X2AbilityTrigger_EventListener';
+	// NOTE!! This does not work! Every single time, at least when testing in Tactical,
+	// the listener failed to register! However if I loaded a savegame, the listener did
+	// register and everything worked. However the above "register listener via effect"
+	// seems to work in all cases. Hella ugly, but works.
+
+	/*ScamperListener = new class'X2AbilityTrigger_EventListener';
 	ScamperListener.ListenerData.Deferral = ELD_OnStateSubmitted;
 	ScamperListener.ListenerData.EventID = 'ScamperBegin';
 	ScamperListener.ListenerData.Filter = eFilter_Unit;
 	ScamperListener.ListenerData.EventFn = class'ReconOperator_AbilitySet'.static.SituationalAwarenessScamperListener;
-	Template.AbilityTriggers.AddItem(ScamperListener);
+	Template.AbilityTriggers.AddItem(ScamperListener);*/
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
 	`log("[ReconOperator]-> ReconSituationalAwarenessWatcher Ability template created");
 
@@ -289,8 +301,10 @@ static function X2AbilityTemplate AddSituationalAwarenessReaction()
 	Template.AbilityTargetConditions.AddItem(Condition);
 
 	// Targeting Method
-	//Template.TargetingMethod = class'X2TargetingMethod_OverTheShoulder';
+	Template.TargetingMethod = class'X2TargetingMethod_OverTheShoulder';
 	Template.CinescriptCameraType = "StandardGunFiring";
+	//Template.BuildVisualizationFn = class'X2Ability_DefaultAbilitySet'.static.OverwatchAbility_BuildVisualization;
+	//Template.CinescriptCameraType = "Overwatch";
 
 	// Voice events
 	//Template.ActivationSpeech = 'DoubleTap';

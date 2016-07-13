@@ -56,7 +56,7 @@ static function X2DataTemplate AddMarksmanRifleCV()
 
 	`CREATE_X2TEMPLATE(class'X2WeaponTemplate', Template, 'ReconMarksmanRifle_CV');
 
-	Template.WeaponPanelImage = "_ConventionalRifle";
+	Template.WeaponPanelImage = "_ConventionalSniperRifle";
 	Template.EquipSound = "Conventional_Weapon_Equip";
 
 	Template.ItemCat = 'weapon';
@@ -66,7 +66,7 @@ static function X2DataTemplate AddMarksmanRifleCV()
 	
 	Template.WeaponCat = 'rifle';
 	Template.WeaponTech = 'conventional';
-	Template.strImage = "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_Base";
+	Template.strImage = "img:///UILibrary_Common.ConvSniper.ConvSniper_Base";
 	Template.Tier = 0;
 
 	Template.RangeAccuracy = class'ReconOperator_Item_MarksmanRifle'.default.RECON_MARKSMAN_CONVENTIONAL_RANGE;
@@ -89,15 +89,15 @@ static function X2DataTemplate AddMarksmanRifleCV()
 
 
 	// This all the resources; sounds, animations, models, physics, the works.
-	Template.GameArchetype = "WP_AssaultRifle_CV.WP_AssaultRifle_CV";
-
-	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_AssaultRifle';
-	Template.AddDefaultAttachment('Mag', "ConvAssaultRifle.Meshes.SM_ConvAssaultRifle_MagA", , "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_MagA");
-	Template.AddDefaultAttachment('Optic', "ConvAssaultRifle.Meshes.SM_ConvAssaultRifle_OpticA", , "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_OpticA");
-	Template.AddDefaultAttachment('Reargrip', "ConvAssaultRifle.Meshes.SM_ConvAssaultRifle_ReargripA", , "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_ReargripA");
-	Template.AddDefaultAttachment('Stock', "ConvAssaultRifle.Meshes.SM_ConvAssaultRifle_StockA", , "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_StockA");
-	Template.AddDefaultAttachment('Trigger', "ConvAssaultRifle.Meshes.SM_ConvAssaultRifle_TriggerA", , "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_TriggerA");
-	Template.AddDefaultAttachment('Light', "ConvAttachments.Meshes.SM_ConvFlashLight", , "img:///UILibrary_Common.ConvAssaultRifle.ConvAssault_LightA");
+	Template.GameArchetype = "WP_SniperRifle_CV.WP_SniperRifle_CV";
+	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_Sniper';
+	Template.AddDefaultAttachment('Mag', "ConvSniper.Meshes.SM_ConvSniper_MagA", , "img:///UILibrary_Common.ConvSniper.ConvSniper_MagA");
+	Template.AddDefaultAttachment('Optic', "ConvSniper.Meshes.SM_ConvSniper_OpticA", , "img:///UILibrary_Common.ConvSniper.ConvSniper_OpticA");
+	Template.AddDefaultAttachment('Reargrip', "ConvSniper.Meshes.SM_ConvSniper_ReargripA" /*REARGRIP INCLUDED IN TRIGGER IMAGE*/);
+	Template.AddDefaultAttachment('Stock', "ConvSniper.Meshes.SM_ConvSniper_StockA", , "img:///UILibrary_Common.ConvSniper.ConvSniper_StockA");
+	Template.AddDefaultAttachment('Suppressor', "ConvSniper.Meshes.SM_ConvSniper_SuppressorA", , "img:///UILibrary_Common.ConvSniper.ConvSniper_SuppressorA");
+	Template.AddDefaultAttachment('Trigger', "ConvSniper.Meshes.SM_ConvSniper_TriggerA", , "img:///UILibrary_Common.ConvSniper.ConvSniper_TriggerA");
+	Template.AddDefaultAttachment('Light', "ConvAttachments.Meshes.SM_ConvFlashLight");
 
 	Template.iPhysicsImpulse = 5;
 	Template.StartingItem = true;
@@ -119,7 +119,7 @@ static function X2DataTemplate AddMarksmanRifleMG()
 
 	`CREATE_X2TEMPLATE(class'X2WeaponTemplate', Template, 'ReconMarksmanRifle_MG');
 
-	Template.WeaponPanelImage = "_MagneticRifle";
+	Template.WeaponPanelImage = "_MagneticSniperRifle";
 	Template.EquipSound = "Magnetic_Weapon_Equip";
 
 	Template.ItemCat = 'weapon';
@@ -129,7 +129,7 @@ static function X2DataTemplate AddMarksmanRifleMG()
 	
 	Template.WeaponCat = 'rifle';
 	Template.WeaponTech = 'magnetic';
-	Template.strImage = "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_Base";
+	Template.strImage = "img:///UILibrary_Common.UI_MagSniper.MagSniper_Base";
 	Template.Tier = 2;
 	Template.CreatorTemplateName = 'AssaultRifle_MG_Schematic'; // piggybacking rifle research schematics
 	Template.BaseItem = 'ReconMarksmanRifle_CV';
@@ -153,14 +153,14 @@ static function X2DataTemplate AddMarksmanRifleMG()
 	Template.Abilities.AddItem('MarksmanRifleStatBonus');
 
 	// This all the resources; sounds, animations, models, physics, the works.
-	Template.GameArchetype = "WP_AssaultRifle_MG.WP_AssaultRifle_MG";
-
-	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_AssaultRifle';
-	Template.AddDefaultAttachment('Mag', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_MagA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_MagA");
-	Template.AddDefaultAttachment('Suppressor', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_SuppressorA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_SupressorA");
-	Template.AddDefaultAttachment('Reargrip', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_ReargripA", , /* included with TriggerA */);
-	Template.AddDefaultAttachment('Stock', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_StockA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_StockA");
-	Template.AddDefaultAttachment('Trigger', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_TriggerA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_TriggerA");
+	Template.GameArchetype = "WP_SniperRifle_MG.WP_SniperRifle_MG";
+	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_Sniper';
+	Template.AddDefaultAttachment('Mag', "MagSniper.Meshes.SM_MagSniper_MagA", , "img:///UILibrary_Common.UI_MagSniper.MagSniper_MagA");
+	Template.AddDefaultAttachment('Optic', "MagSniper.Meshes.SM_MagSniper_OpticA", , "img:///UILibrary_Common.UI_MagSniper.MagSniper_OpticA");
+	Template.AddDefaultAttachment('Reargrip',   "MagSniper.Meshes.SM_MagSniper_ReargripA" /* image included in TriggerA */);
+	Template.AddDefaultAttachment('Stock', "MagSniper.Meshes.SM_MagSniper_StockA", , "img:///UILibrary_Common.UI_MagSniper.MagSniper_StockA");
+	Template.AddDefaultAttachment('Suppressor', "MagSniper.Meshes.SM_MagSniper_SuppressorA", , "img:///UILibrary_Common.UI_MagSniper.MagSniper_SuppressorA");
+	Template.AddDefaultAttachment('Trigger', "MagSniper.Meshes.SM_MagSniper_TriggerA", , "img:///UILibrary_Common.UI_MagSniper.MagSniper_TriggerA");
 	Template.AddDefaultAttachment('Light', "ConvAttachments.Meshes.SM_ConvFlashLight");
 
 	Template.iPhysicsImpulse = 5;
@@ -183,7 +183,7 @@ static function X2DataTemplate AddMarksmanRifleBM()
 
 	`CREATE_X2TEMPLATE(class'X2WeaponTemplate', Template, 'ReconMarksmanRifle_BM');
 
-	Template.WeaponPanelImage = "_BeamRifle";
+	Template.WeaponPanelImage = "_BeamSniperRifle";
 	Template.EquipSound = "Beam_Weapon_Equip";
 
 	Template.ItemCat = 'weapon';
@@ -193,7 +193,7 @@ static function X2DataTemplate AddMarksmanRifleBM()
 	
 	Template.WeaponCat = 'rifle';
 	Template.WeaponTech = 'beam';
-	Template.strImage = "img:///UILibrary_Common.UI_BeamAssaultRifle.BeamAssaultRifle_Base";
+	Template.strImage = "img:///UILibrary_Common.UI_BeamSniper.BeamSniper_Base";
 	Template.Tier = 2;
 	Template.CreatorTemplateName = 'AssaultRifle_BM_Schematic';
 	Template.BaseItem = 'MarksmanRifle_MG';
@@ -217,15 +217,14 @@ static function X2DataTemplate AddMarksmanRifleBM()
 	Template.Abilities.AddItem('MarksmanRifleStatBonus');
 
 	// This all the resources; sounds, animations, models, physics, the works.
-	Template.GameArchetype = "WP_AssaultRifle_MG.WP_AssaultRifle_MG";
-
-	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_AssaultRifle';
-	Template.AddDefaultAttachment('Mag', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_MagA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_MagA");
-	Template.AddDefaultAttachment('Suppressor', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_SuppressorA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_SupressorA");
-	Template.AddDefaultAttachment('Reargrip', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_ReargripA", , /* included with TriggerA */);
-	Template.AddDefaultAttachment('Stock', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_StockA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_StockA");
-	Template.AddDefaultAttachment('Trigger', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_TriggerA", , "img:///UILibrary_Common.UI_MagAssaultRifle.MagAssaultRifle_TriggerA");
-	Template.AddDefaultAttachment('Light', "ConvAttachments.Meshes.SM_ConvFlashLight");
+	Template.GameArchetype = "WP_SniperRifle_BM.WP_SniperRifle_BM";
+	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_Sniper';
+	Template.AddDefaultAttachment('Optic', "BeamSniper.Meshes.SM_BeamSniper_OpticA", , "img:///UILibrary_Common.UI_BeamSniper.BeamSniper_OpticA");
+	Template.AddDefaultAttachment('Mag', "BeamSniper.Meshes.SM_BeamSniper_MagA", , "img:///UILibrary_Common.UI_BeamSniper.BeamSniper_MagA");
+	Template.AddDefaultAttachment('Suppressor', "BeamSniper.Meshes.SM_BeamSniper_SuppressorA", , "img:///UILibrary_Common.UI_BeamSniper.BeamSniper_SupressorA");
+	Template.AddDefaultAttachment('Core', "BeamSniper.Meshes.SM_BeamSniper_CoreA", , "img:///UILibrary_Common.UI_BeamSniper.BeamSniper_CoreA");
+	Template.AddDefaultAttachment('HeatSink', "BeamSniper.Meshes.SM_BeamSniper_HeatSinkA", , "img:///UILibrary_Common.UI_BeamSniper.BeamSniper_HeatsinkA");
+	Template.AddDefaultAttachment('Light', "BeamAttachments.Meshes.BeamFlashLight");
 
 	Template.iPhysicsImpulse = 5;
 	Template.StartingItem = false;
