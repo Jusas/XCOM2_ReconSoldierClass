@@ -12,6 +12,8 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
 	local float TargetValueFloat;
 	local UnitValue ScamperValue;
 	local UnitValue TargetValue;
+	local XComGameStateHistory History;
+	local XComGameState_Unit PreviouslyAssignedTarget;
 
 	SourceUnit = XComGameState_Unit(kSource);
 	TargetUnit = XComGameState_Unit(kTarget);
@@ -20,13 +22,13 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
 
 	if (SourceUnit == none || TargetUnit == none)
 	{
-		`log("[ReconOperator]-> SituationalAwarenessCondition.CallMeetsConditionWithSource: AA_NotAUnit");
+		`log("[ReconOperator]-> SituationalAwarenessCondition: No source/target unit. AA_NotAUnit");
 		return 'AA_NotAUnit';
 	}
 
 	if(SourceUnit.GetUnitValue('CausedScampering', ScamperValue))
 	{
-		`log("[ReconOperator]-> SituationalAwarenessCondition.CallMeetsConditionWithSource: CausedScampering");
+		`log("[ReconOperator]-> SituationalAwarenessCondition: CausedScampering is set for SourceUnit");
 		if(ScamperValue.fValue > 0)
 		{
 			if(!SourceUnit.GetUnitValue('ReconSituationalAwarenessTarget', TargetValue))
@@ -39,11 +41,26 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
 				TargetValueFloat = TargetUnit.ObjectID;
 				if(TargetValue.fValue != TargetValueFloat)
 				{
-					`log("[ReconOperator]-> SituationalAwarenessCondition.CallMeetsConditionWithSource: Another target already set. AA_NotAUnit");
+					if(TargetValue.fValue == 0)
+					{
+						`log("[ReconOperator]-> SituationalAwarenessCondition: Target reset to ObjectID 0. AA_NotAUnit");
+						return 'AA_NotAUnit';
+					}
+
+					History = `XCOMHISTORY;
+					PreviouslyAssignedTarget = XComGameState_Unit(History.GetGameStateForObjectID(TargetValue.fValue));
+					if(PreviouslyAssignedTarget.IsDead())
+					{
+						SourceUnit.SetUnitFloatValue('ReconSituationalAwarenessTarget', TargetUnit.ObjectID);
+						`log("[ReconOperator]-> SituationalAwarenessCondition: The target is dead, assigning new target. AA_Success");
+						return 'AA_Success';
+
+					}
+					`log("[ReconOperator]-> SituationalAwarenessCondition: Another target already set. AA_NotAUnit");
 					return 'AA_NotAUnit';
 				}
 			}
-			`log("[ReconOperator]-> SituationalAwarenessCondition.CallMeetsConditionWithSource: AA_Success");
+			`log("[ReconOperator]-> SituationalAwarenessCondition: AA_Success");
 			return 'AA_Success'; 
 		}
 	}

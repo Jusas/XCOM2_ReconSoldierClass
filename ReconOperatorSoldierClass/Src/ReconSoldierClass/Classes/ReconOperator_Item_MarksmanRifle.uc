@@ -85,7 +85,7 @@ static function X2DataTemplate AddMarksmanRifleCV()
 	Template.Abilities.AddItem('OverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('HotLoadAmmo');
-	Template.Abilities.AddItem('MarksmanRifleStatBonus');
+	Template.Abilities.AddItem('ReconMarksmanRifleBonus');
 
 
 	// This all the resources; sounds, animations, models, physics, the works.
@@ -150,7 +150,7 @@ static function X2DataTemplate AddMarksmanRifleMG()
 	Template.Abilities.AddItem('OverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('HotLoadAmmo');
-	Template.Abilities.AddItem('MarksmanRifleStatBonus');
+	Template.Abilities.AddItem('ReconMarksmanRifleBonus');
 
 	// This all the resources; sounds, animations, models, physics, the works.
 	Template.GameArchetype = "WP_SniperRifle_MG.WP_SniperRifle_MG";
@@ -214,7 +214,7 @@ static function X2DataTemplate AddMarksmanRifleBM()
 	Template.Abilities.AddItem('OverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('HotLoadAmmo');
-	Template.Abilities.AddItem('MarksmanRifleStatBonus');
+	Template.Abilities.AddItem('ReconMarksmanRifleBonus');
 
 	// This all the resources; sounds, animations, models, physics, the works.
 	Template.GameArchetype = "WP_SniperRifle_BM.WP_SniperRifle_BM";

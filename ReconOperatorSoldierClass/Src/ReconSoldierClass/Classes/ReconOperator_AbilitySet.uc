@@ -426,10 +426,12 @@ static function X2AbilityTemplate AddMarksmanSpecializationAbility()
 	// Just a persistent dummy effect to display that this ability is indeed active.
 	// The real effect is attached to the Marksman Rifle and it just checks the presence
 	// of this ability in order to not apply the penalty effects.
+	// Hmm: I don't think we want to show the icon. The weapon abilities have effects that
+	// should show their own icons.
 	PersistentEffect = new class'X2Effect_Persistent';
 	PersistentEffect.EffectName = 'ReconMarksmanSpecialization';
 	PersistentEffect.BuildPersistentEffect(1, true, true, false);
-	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true,,Template.AbilitySourceName);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, false,,Template.AbilitySourceName);
 	Template.AddTargetEffect(PersistentEffect);		
 
 	// Not an AWC skill.
