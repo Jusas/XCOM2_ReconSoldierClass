@@ -15,7 +15,11 @@ var config int RECON_MARKTARGETS_TILE_LENGTH; // Mark targets cone length
 var config bool RECON_MARKTARGETS_CROSSCLASS_ELIGIBLE; // Mark targets defense modification
 var config bool RECON_LIGHTFEET_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 var config bool RECON_MARKSMAN_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
-
+var config int RECON_MARKTARGETS_COOLDOWN; // Cooldown turns
+var config int RECON_CONCEALEDSHOT_COOLDOWN; // Cooldown turns
+var config bool RECON_CONCEALEDSHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
+var config int RECON_PINPOINTSHOT_COOLDOWN; // Cooldown turns
+var config bool RECON_PINPOINTSHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -34,6 +38,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddSituationalAwarenessReaction() );
 	Templates.AddItem( AddMarksmanSpecializationAbility() );
 	Templates.AddItem( AddMarkTargetsAbility() );
+	Templates.AddItem( AddConcealedShotAbility() );
+	Templates.AddItem( AddPinpointAccuracyShotAbility() );
 
 	return Templates;
 
@@ -259,6 +265,10 @@ static function X2AbilityTemplate AddSituationalAwarenessReaction()
 	// The damage effect.
 	Template.AddTargetEffect(new class'X2Effect_ApplyWeaponDamage');
 
+	// The miss effect? Does this apply the "miss" damage if stock is equipped?
+	Template.AddTargetEffect(default.WeaponUpgradeMissDamage);
+
+
 	// Knockback for the ragdoll if the target dies.
 	KnockbackEffect = new class'X2Effect_Knockback';
 	KnockbackEffect.KnockbackDistance = 2;
@@ -471,11 +481,12 @@ static function X2AbilityTemplate AddMarkTargetsAbility()
 	
 	Template.AbilitySourceName = 'eAbilitySource_Standard';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;	
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SERGEANT_PRIORITY;
 	Template.Hostility = eHostility_Offensive;
 	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_reconnoiter";
 
 	Cooldown = new class'X2AbilityCooldown';
-	Cooldown.iNumTurns = 3;
+	Cooldown.iNumTurns = default.RECON_MARKTARGETS_COOLDOWN;
 	Template.AbilityCooldown = Cooldown;
 
 	// Targeting method is cone.
@@ -539,6 +550,160 @@ static function X2AbilityTemplate AddMarkTargetsAbility()
 
 
 	`log("[ReconOperator]-> Mark Target Ability template created");
+
+	return Template;
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Concealed shot ability.
+// -----------------------------------------------------------------------------------------------------
+
+
+static function X2AbilityTemplate AddConcealedShotAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCooldown                 Cooldown;
+	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
+	local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2Condition_UnitProperty			UnitProperty;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconConcealedShot');
+
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_concealedshot";
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Offensive;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY;
+
+	Template.TargetingMethod = class'X2TargetingMethod_OverTheShoulder';
+	Template.bUsesFiringCamera = true;
+	Template.CinescriptCameraType = "StandardGunFiring";
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.RECON_CONCEALEDSHOT_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	Template.AbilityToHitCalc = ToHitCalc;
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 2;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	// Unit must be concealed to make a concealed shot (duh) -- Not working :(
+	UnitProperty = new class'X2Condition_UnitProperty';
+	UnitProperty.IsConcealed = true;
+	UnitProperty.ExcludeFriendlyToSource = false;
+	Template.AbilityShooterConditions.AddItem(UnitProperty);
+
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bAllowSquadsight = true;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+
+	//  Put holo target effect first because if the target dies from this shot, it will be too late to notify the effect.
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+
+
+	Template.bAllowAmmoEffects = true;
+
+	// This is the thing yo.
+	Template.ConcealmentRule = eConceal_Always;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	Template.bCrossClassEligible = default.RECON_CONCEALEDSHOT_CROSSCLASS_ELIGIBLE;
+
+	return Template;
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Pinpoint Accuracy shot ability.
+// -----------------------------------------------------------------------------------------------------
+
+
+static function X2AbilityTemplate AddPinpointAccuracyShotAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCooldown                 Cooldown;
+	local X2AbilityToHitCalc_ReconPinpointAccuracy    ToHitCalc;
+	local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;	
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconPinpointAccuracyShot');
+
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_pinpointaccuracy";
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Offensive;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
+
+	Template.TargetingMethod = class'X2TargetingMethod_OverTheShoulder';
+	Template.bUsesFiringCamera = true;
+	Template.CinescriptCameraType = "StandardGunFiring";
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.RECON_PINPOINTSHOT_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	// Our own hit calc, doing the cover reduction.
+	ToHitCalc = new class'X2AbilityToHitCalc_ReconPinpointAccuracy';
+	Template.AbilityToHitCalc = ToHitCalc;
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 2;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bAllowSquadsight = true;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+
+	//  Put holo target effect first because if the target dies from this shot, it will be too late to notify the effect.
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+
+
+	Template.bAllowAmmoEffects = true;
+
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	Template.bCrossClassEligible = default.RECON_PINPOINTSHOT_CROSSCLASS_ELIGIBLE;
 
 	return Template;
 }

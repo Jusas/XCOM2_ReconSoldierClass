@@ -73,6 +73,9 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_WeaponAbilities.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\X2AbilityToHitCalc_ReconPinpointAccuracy.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\X2Condition_UnitDoesNotHaveAbility.uc">
       <SubType>Content</SubType>
     </Content>
