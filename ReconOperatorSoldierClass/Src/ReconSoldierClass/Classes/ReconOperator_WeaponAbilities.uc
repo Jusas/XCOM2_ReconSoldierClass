@@ -60,14 +60,9 @@ static function X2AbilityTemplate AddCarbineBonusAbility()
 
 static function X2AbilityTemplate AddMarksmanRifleBonusAbility()
 {
-	local X2AbilityTemplate                 Template;	
-	local X2Effect_PersistentStatChange		StatChangeEffect;
-	local X2Effect_Persistent		BaseEffect;
-	local X2Condition_UnitDoesNotHaveAbility AbilityMissingCondition;
+	local X2AbilityTemplate Template;
 	local X2Effect_Squadsight SquadsightEffect;
 	local X2Condition_AbilityProperty HasAbilityCondition;
-	local X2Condition_UnitValue ValueCondition;
-	local X2AbilityTrigger_EventListener MoveFinishedListener;
 
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconMarksmanRifleBonus');
@@ -112,10 +107,7 @@ static function X2AbilityTemplate AddMarksmanMovementEffectsAbility()
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Effect_PersistentStatChange		StatChangeEffect;
-	local X2Effect_Persistent		BaseEffect;
 	local X2Condition_UnitDoesNotHaveAbility AbilityMissingCondition;
-	local X2Effect_Squadsight SquadsightEffect;
-	local X2Condition_AbilityProperty HasAbilityCondition;
 	local X2Condition_UnitValue ValueCondition;
 	local X2AbilityTrigger_EventListener MoveFinishedListener;
 

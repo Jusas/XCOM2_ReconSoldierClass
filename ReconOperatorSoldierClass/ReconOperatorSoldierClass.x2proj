@@ -26,6 +26,9 @@
     <Content Include="Config\XComGameData.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComGameData_Effects.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComGameData_SoldierSkills.ini">
       <SubType>Content</SubType>
     </Content>
@@ -35,12 +38,17 @@
     <Content Include="Content\UILibrary_ReconOperator.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\ReconSoldierClass.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
-    <Content Include="Localization\XComGame.int" />
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
@@ -48,6 +56,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Item_MarksmanRifle.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_MarkedEffect.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ScamperWatchEffect.uc">

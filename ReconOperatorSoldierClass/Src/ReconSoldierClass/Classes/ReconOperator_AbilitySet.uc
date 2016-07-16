@@ -10,6 +10,11 @@ class ReconOperator_AbilitySet extends X2Ability
 
 var config int RECON_LIGHTFEET_MOBILITY; // Mobility bonus granted by Light Feet
 var config int RECON_LIGHTFEET_DETECTION_BONUS; // Mobility bonus granted by Light Feet
+var config int RECON_MARKTARGETS_TILE_WIDTH; // Mark targets cone end width
+var config int RECON_MARKTARGETS_TILE_LENGTH; // Mark targets cone length
+var config bool RECON_MARKTARGETS_CROSSCLASS_ELIGIBLE; // Mark targets defense modification
+var config bool RECON_LIGHTFEET_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
+var config bool RECON_MARKSMAN_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 
 
 // -----------------------------------------------------------------------------------------------------
@@ -28,6 +33,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddSituationalAwarenessWatcher() );
 	Templates.AddItem( AddSituationalAwarenessReaction() );
 	Templates.AddItem( AddMarksmanSpecializationAbility() );
+	Templates.AddItem( AddMarkTargetsAbility() );
 
 	return Templates;
 
@@ -65,7 +71,7 @@ static function X2AbilityTemplate AddLightFeetAbility()
 	PersistentStatChangeEffect.DuplicateResponse = eDupe_Ignore;
 	Template.AddTargetEffect(PersistentStatChangeEffect);		
 
-	Template.bCrossClassEligible = true;
+	Template.bCrossClassEligible = default.RECON_LIGHTFEET_CROSSCLASS_ELIGIBLE;
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  NOTE: No visualization on purpose!
@@ -130,7 +136,6 @@ static function X2AbilityTemplate AddSituationalAwarenessAbility()
 static function X2AbilityTemplate AddSituationalAwarenessWatcher()
 {
 	local X2AbilityTemplate                 Template;
-	local X2AbilityTrigger_EventListener    ScamperListener;
 	local ReconOperator_ScamperWatchEffect  ScamperWatchEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconSituationalAwarenessWatcher');
@@ -432,15 +437,108 @@ static function X2AbilityTemplate AddMarksmanSpecializationAbility()
 	PersistentEffect.EffectName = 'ReconMarksmanSpecialization';
 	PersistentEffect.BuildPersistentEffect(1, true, true, false);
 	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, false,,Template.AbilitySourceName);
-	Template.AddTargetEffect(PersistentEffect);		
+	Template.AddTargetEffect(PersistentEffect);
 
-	// Not an AWC skill.
-	Template.bCrossClassEligible = false;
+	// Cross-class eligibility
+	Template.bCrossClassEligible = default.RECON_MARKSMAN_CROSSCLASS_ELIGIBLE;
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  NOTE: No visualization on purpose!
 
 	`log("[ReconOperator]-> Marksman Rifle Specialization Ability template created");
+
+	return Template;
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Mark Target ability. Check the 'ReconOperator_MarkedEffect' class for the applied effect.
+// -----------------------------------------------------------------------------------------------------
+
+static function X2AbilityTemplate AddMarkTargetsAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Cone         ConeMultiTarget;
+	local X2Condition_UnitProperty			UnitPropertyCondition;
+	local X2Condition_UnitEffects			UnitEffectsCondition;
+	local ReconOperator_MarkedEffect		MarkedEffect;
+	local X2AbilityCooldown					Cooldown;
+
+	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconMarkTargets' );
+	
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;	
+	Template.Hostility = eHostility_Offensive;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_reconnoiter";
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = 3;
+	Template.AbilityCooldown = Cooldown;
+
+	// Targeting method is cone.
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	// Standard move action point cost.
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.bMoveCost = true;
+	ActionPointCost.iNumPoints = 1;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	
+	// Cursor target?
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.FixedAbilityRange = 27;
+	Template.AbilityTargetStyle = CursorTarget;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.ARMOR_ACTIVE_PRIORITY;
+
+	// Obviously cone that takes multiple targets inside it.
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bUseWeaponRadius = true;
+	ConeMultiTarget.ConeEndDiameter = default.RECON_MARKTARGETS_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.ConeLength = default.RECON_MARKTARGETS_TILE_LENGTH * class'XComWorldData'.const.WORLD_StepSize;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+	Template.AddShooterEffectExclusions();
+
+	// Target must be an enemy
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = true;
+	Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
+
+	// Target cannot already be marked
+	UnitEffectsCondition = new class'X2Condition_UnitEffects';
+	UnitEffectsCondition.AddExcludeEffect(class'X2StatusEffects'.default.MarkedName, 'AA_UnitIsMarked');
+	Template.AbilityTargetConditions.AddItem(UnitEffectsCondition);
+
+	// The actual effect.
+	MarkedEffect = new class 'ReconOperator_MarkedEffect';
+	Template.AddMultiTargetEffect(MarkedEffect);
+
+	//Template.bOverrideAim = true;
+	//Template.bUseSourceLocationZToAim = true;
+	Template.ConcealmentRule = eConceal_Always;
+
+	Template.bCrossClassEligible = default.RECON_MARKTARGETS_CROSSCLASS_ELIGIBLE;
+
+	Template.ActivationSpeech = 'TargetSpottedHidden';
+
+	Template.CustomFireAnim = 'HL_SignalPoint';
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.CinescriptCameraType = "Mark_Target";
+
+
+	`log("[ReconOperator]-> Mark Target Ability template created");
 
 	return Template;
 }
