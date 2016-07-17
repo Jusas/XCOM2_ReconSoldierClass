@@ -20,6 +20,7 @@ var config int RECON_CONCEALEDSHOT_COOLDOWN; // Cooldown turns
 var config bool RECON_CONCEALEDSHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 var config int RECON_PINPOINTSHOT_COOLDOWN; // Cooldown turns
 var config bool RECON_PINPOINTSHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
+var config int RECON_DOUBLESHOT_SECONDSHOT_PENALTY; // Double shot second shot acc penalty
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -40,6 +41,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddMarkTargetsAbility() );
 	Templates.AddItem( AddConcealedShotAbility() );
 	Templates.AddItem( AddPinpointAccuracyShotAbility() );
+	Templates.AddItem( AddDoubleShotAbility() );
+	Templates.AddItem( AddDoubleShot2Ability() );
 
 	return Templates;
 
@@ -479,7 +482,7 @@ static function X2AbilityTemplate AddMarkTargetsAbility()
 
 	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconMarkTargets' );
 	
-	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;	
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SERGEANT_PRIORITY;
 	Template.Hostility = eHostility_Offensive;
@@ -574,7 +577,7 @@ static function X2AbilityTemplate AddConcealedShotAbility()
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconConcealedShot');
 
 	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_concealedshot";
-	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
 	Template.Hostility = eHostility_Offensive;
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY;
@@ -652,7 +655,7 @@ static function X2AbilityTemplate AddPinpointAccuracyShotAbility()
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconPinpointAccuracyShot');
 
 	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_pinpointaccuracy";
-	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
 	Template.Hostility = eHostility_Offensive;
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
@@ -704,4 +707,188 @@ static function X2AbilityTemplate AddPinpointAccuracyShotAbility()
 	Template.bCrossClassEligible = default.RECON_PINPOINTSHOT_CROSSCLASS_ELIGIBLE;
 
 	return Template;
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Double Shot ability, almost the same as Grenadier's Chain Shot. Mostly copied from there.
+// -----------------------------------------------------------------------------------------------------
+
+
+static function X2AbilityTemplate AddDoubleShotAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
+	local X2AbilityCooldown                 Cooldown;
+	local X2Condition_Visibility			TargetVisibilityCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconDoubleShot');
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 0; //Uses typical action points of weapon:
+	ActionPointCost.bAddWeaponTypicalCost = true;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = 4;
+	Template.AbilityCooldown = Cooldown;
+
+	//  require 2 ammo to be present so that both shots can be taken
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 2;
+	AmmoCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	//  actually charge 1 ammo for this shot. the 2nd shot will charge the extra ammo.
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bAllowSquadsight = true;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+	Template.AddTargetEffect(class'X2Ability'.default.WeaponUpgradeMissDamage);
+	Template.bAllowAmmoEffects = true;
+
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_doubleshot";
+	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	Template.AdditionalAbilities.AddItem('ReconDoubleShot2');
+	Template.PostActivationEvents.AddItem('ReconDoubleShot2');
+	Template.CinescriptCameraType = "StandardGunFiring";
+
+	Template.DamagePreviewFn = DoubleShotDamagePreview;
+	Template.bCrossClassEligible = true;
+
+	Template.bPreventsTargetTeleport = true;
+
+	return Template;
+}
+
+function bool DoubleShotDamagePreview(XComGameState_Ability AbilityState, StateObjectReference TargetRef, out WeaponDamageValue MinDamagePreview, out WeaponDamageValue MaxDamagePreview, out int AllowsShield)
+{
+	local XComGameState_Unit AbilityOwner;
+	local StateObjectReference DoubleShot2Ref;
+	local XComGameState_Ability DoubleShot2Ability;
+	local XComGameStateHistory History;
+
+	AbilityState.NormalDamagePreview(TargetRef, MinDamagePreview, MaxDamagePreview, AllowsShield);
+
+	History = `XCOMHISTORY;
+	AbilityOwner = XComGameState_Unit(History.GetGameStateForObjectID(AbilityState.OwnerStateObject.ObjectID));
+	DoubleShot2Ref = AbilityOwner.FindAbility('ReconDoubleShot2');
+	DoubleShot2Ability = XComGameState_Ability(History.GetGameStateForObjectID(DoubleShot2Ref.ObjectID));
+	DoubleShot2Ability.NormalDamagePreview(TargetRef, MinDamagePreview, MaxDamagePreview, AllowsShield);
+	return true;
+}
+
+static function X2AbilityTemplate AddDoubleShot2Ability()
+{
+	local X2AbilityTemplate					Template;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
+	local X2AbilityTrigger_EventListener    Trigger;
+	local X2Condition_Visibility			TargetVisibilityCondition;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconDoubleShot2');
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 0;
+	ActionPointCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.BuiltInHitMod = default.RECON_DOUBLESHOT_SECONDSHOT_PENALTY;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bAllowSquadsight = true;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+	Template.AddTargetEffect(class'X2Ability'.default.WeaponUpgradeMissDamage);
+	Template.bAllowAmmoEffects = true;
+
+	Trigger = new class'X2AbilityTrigger_EventListener';
+	Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
+	Trigger.ListenerData.EventID = 'ReconDoubleShot2';
+	Trigger.ListenerData.Filter = eFilter_Unit;
+	Trigger.ListenerData.EventFn = static.DoubleShotListener;
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_doubleshot";
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.bShowActivation = true;
+	Template.CinescriptCameraType = "StandardGunFiring";
+
+	return Template;
+}
+
+static function EventListenerReturn DoubleShotListener(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
+{
+	local XComGameStateContext_Ability AbilityContext;
+	local StateObjectReference AbilityRef;
+	local XComGameState_Ability Ability;
+	local XComGameStateHistory History;
+	local XComGameState_Unit UnitState;
+
+	`log("[ReconOperator]-> DoubleShotListener triggered");
+
+	AbilityContext = XComGameStateContext_Ability(GameState.GetContext());
+	UnitState = XComGameState_Unit(EventSource);
+	History = `XCOMHISTORY;
+
+	AbilityRef = UnitState.FindAbility('ReconDoubleShot2');
+	Ability = XComGameState_Ability(History.GetGameStateForObjectID(AbilityRef.ObjectID));
+	`log("[ReconOperator]-> DoubleShotListener ability name: " $ Ability.GetMyTemplateName());
+	Ability.AbilityTriggerAgainstSingleTarget(AbilityContext.InputContext.PrimaryTarget, false);
+
+	return ELR_NoInterrupt;
 }
