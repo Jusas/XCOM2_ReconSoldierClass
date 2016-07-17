@@ -569,7 +569,7 @@ static function X2AbilityTemplate AddConcealedShotAbility()
 	local X2Condition_Visibility            TargetVisibilityCondition;
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
-	local X2Condition_UnitProperty			UnitProperty;
+	local ReconOperator_ShooterConcealedCondition			ConcealedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconConcealedShot');
 
@@ -595,7 +595,7 @@ static function X2AbilityTemplate AddConcealedShotAbility()
 	Template.AbilityCosts.AddItem(AmmoCost);
 
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
-	ActionPointCost.iNumPoints = 2;
+	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
@@ -605,11 +605,9 @@ static function X2AbilityTemplate AddConcealedShotAbility()
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	Template.AddShooterEffectExclusions();
 
-	// Unit must be concealed to make a concealed shot (duh) -- Not working :(
-	UnitProperty = new class'X2Condition_UnitProperty';
-	UnitProperty.IsConcealed = true;
-	UnitProperty.ExcludeFriendlyToSource = false;
-	Template.AbilityShooterConditions.AddItem(UnitProperty);
+	// Unit must be concealed to make a concealed shot (duh)
+	ConcealedCondition = new class'ReconOperator_ShooterConcealedCondition';
+	Template.AbilityTargetConditions.AddItem(ConcealedCondition);
 
 	TargetVisibilityCondition = new class'X2Condition_Visibility';
 	TargetVisibilityCondition.bRequireGameplayVisible = true;
@@ -676,7 +674,7 @@ static function X2AbilityTemplate AddPinpointAccuracyShotAbility()
 	Template.AbilityCosts.AddItem(AmmoCost);
 
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
-	ActionPointCost.iNumPoints = 2;
+	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	Template.AbilityCosts.AddItem(ActionPointCost);
 

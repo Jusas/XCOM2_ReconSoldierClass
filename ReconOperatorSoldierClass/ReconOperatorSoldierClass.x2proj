@@ -64,6 +64,9 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ScamperWatchEffect.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ShooterConcealedCondition.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_SituationalAwarenessCondition.uc">
       <SubType>Content</SubType>
     </Content>
