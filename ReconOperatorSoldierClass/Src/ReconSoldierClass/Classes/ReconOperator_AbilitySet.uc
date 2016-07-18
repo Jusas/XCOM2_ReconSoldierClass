@@ -9,7 +9,7 @@ class ReconOperator_AbilitySet extends X2Ability
 // -----------------------------------------------------------------------------------------------------
 
 var config int RECON_LIGHTFEET_MOBILITY; // Mobility bonus granted by Light Feet
-var config int RECON_LIGHTFEET_DETECTION_BONUS; // Mobility bonus granted by Light Feet
+var config float RECON_LIGHTFEET_DETECTION_BONUS; // Detection bonus granted by Light Feet
 var config int RECON_MARKTARGETS_TILE_WIDTH; // Mark targets cone end width
 var config int RECON_MARKTARGETS_TILE_LENGTH; // Mark targets cone length
 var config bool RECON_MARKTARGETS_CROSSCLASS_ELIGIBLE; // Mark targets defense modification
@@ -20,7 +20,11 @@ var config int RECON_CONCEALEDSHOT_COOLDOWN; // Cooldown turns
 var config bool RECON_CONCEALEDSHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 var config int RECON_PINPOINTSHOT_COOLDOWN; // Cooldown turns
 var config bool RECON_PINPOINTSHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
+var config bool RECON_DOUBLESHOT_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 var config int RECON_DOUBLESHOT_SECONDSHOT_PENALTY; // Double shot second shot acc penalty
+var config float RECON_SPECULATIVEFIRE_RADIUS; // Radius of the speculative fire sphere
+var config bool RECON_SPECULATIVEFIRE_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
+var config bool RECON_SHOOTER_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -43,6 +47,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddPinpointAccuracyShotAbility() );
 	Templates.AddItem( AddDoubleShotAbility() );
 	Templates.AddItem( AddDoubleShot2Ability() );
+	Templates.AddItem( AddSpeculativeFireAbility() );
+	Templates.AddItem( AddShooterAbility() );
 
 	return Templates;
 
@@ -60,11 +66,13 @@ static function X2AbilityTemplate AddLightFeetAbility()
 	local X2Effect_PersistentStatChange		PersistentStatChangeEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconLightFeet' );
+
 	
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_dash";
+	Template.bIsPassive = true;
 
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
@@ -89,6 +97,8 @@ static function X2AbilityTemplate AddLightFeetAbility()
 
 	return Template;
 }
+
+
 
 // -----------------------------------------------------------------------------------------------------
 // Situational Awareness ability, which grants free overwatch fire if the operator triggers a pod.
@@ -647,7 +657,7 @@ static function X2AbilityTemplate AddPinpointAccuracyShotAbility()
 {
 	local X2AbilityTemplate                 Template;
 	local X2AbilityCooldown                 Cooldown;
-	local X2AbilityToHitCalc_ReconPinpointAccuracy    ToHitCalc;
+	local ReconOperator_AbilityToHitCalc_ReconPinpointAccuracy    ToHitCalc;
 	local X2Condition_Visibility            TargetVisibilityCondition;
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ActionPoints        ActionPointCost;	
@@ -669,7 +679,7 @@ static function X2AbilityTemplate AddPinpointAccuracyShotAbility()
 	Template.AbilityCooldown = Cooldown;
 
 	// Our own hit calc, doing the cover reduction.
-	ToHitCalc = new class'X2AbilityToHitCalc_ReconPinpointAccuracy';
+	ToHitCalc = new class'ReconOperator_AbilityToHitCalc_ReconPinpointAccuracy';
 	Template.AbilityToHitCalc = ToHitCalc;
 
 	AmmoCost = new class'X2AbilityCost_Ammo';
@@ -785,12 +795,16 @@ static function X2AbilityTemplate AddDoubleShotAbility()
 	Template.CinescriptCameraType = "StandardGunFiring";
 
 	Template.DamagePreviewFn = DoubleShotDamagePreview;
-	Template.bCrossClassEligible = true;
+	
+	Template.bCrossClassEligible = default.RECON_DOUBLESHOT_CROSSCLASS_ELIGIBLE;
 
 	Template.bPreventsTargetTeleport = true;
 
 	return Template;
 }
+
+
+// Double Shot related helpers etc.
 
 function bool DoubleShotDamagePreview(XComGameState_Ability AbilityState, StateObjectReference TargetRef, out WeaponDamageValue MinDamagePreview, out WeaponDamageValue MaxDamagePreview, out int AllowsShield)
 {
@@ -891,4 +905,102 @@ static function EventListenerReturn DoubleShotListener(Object EventData, Object 
 	Ability.AbilityTriggerAgainstSingleTarget(AbilityContext.InputContext.PrimaryTarget, false);
 
 	return ELR_NoInterrupt;
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Speculative Fire ability, triggers a pod/pods in a specified area with gunfire.
+// -----------------------------------------------------------------------------------------------------
+
+
+static function X2AbilityTemplate AddSpeculativeFireAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
+	local X2AbilityCooldown                 Cooldown;
+	local X2Condition_Visibility			TargetVisibilityCondition;
+	local X2AbilityTarget_Cursor			CursorTarget;
+	local X2AbilityMultiTarget_Radius		MultiTarget;
+	local ReconOperator_CauseScamperEffect	Effect;
+	local X2TargetingMethod_GremlinAOE		TargetingMethod;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconSpeculativeFire');
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1; //Uses typical action points of weapon:
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = 4;
+	Template.AbilityCooldown = Cooldown;
+	
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	Template.AbilityToHitCalc = default.DeadEye;
+
+
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.bRestrictToWeaponRange = true;
+	CursorTarget.bRestrictToSquadsightRange = true;
+	Template.AbilityTargetStyle = CursorTarget;
+
+	MultiTarget = new class'X2AbilityMultiTarget_Radius';
+	MultiTarget.fTargetRadius = default.RECON_SPECULATIVEFIRE_RADIUS * class'XComWorldData'.const.WORLD_StepSize * class'XComWorldData'.const.WORLD_UNITS_TO_METERS_MULTIPLIER;
+	MultiTarget.bIgnoreBlockingCover = true;
+	Template.AbilityMultiTargetStyle = MultiTarget;
+
+	Template.TargetingMethod = class'ReconOperator_TargetingMethod_Speculative';
+		
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	Effect = new class'ReconOperator_CauseScamperEffect';
+	Effect.BuildPersistentEffect(1, false, true,,eGameRule_PlayerTurnEnd);
+	Effect.EffectName = 'ReconCauseScamperingEffect';
+	Template.AddMultiTargetEffect(Effect);
+	
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SERGEANT_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_speculativefire";
+	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+
+	Template.CinescriptCameraType = "Mark_Target";
+
+	Template.DamagePreviewFn = DoubleShotDamagePreview;
+	Template.bCrossClassEligible = default.RECON_SPECULATIVEFIRE_CROSSCLASS_ELIGIBLE;
+
+
+	return Template;
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Shooter ability, taking a standard shot no longer ends the turn.
+// -----------------------------------------------------------------------------------------------------
+
+static function X2AbilityTemplate AddShooterAbility()
+{
+	local X2AbilityTemplate Template;
+
+	Template = PurePassive('ReconShooter', "img:///UILibrary_ReconOperator.UIPerk_shooter", default.RECON_SHOOTER_CROSSCLASS_ELIGIBLE);
+	Template.AdditionalAbilities.AddItem('StandardShot_NoEnd');
+	Template.OverrideAbilities.AddItem('StandardShot');
+
+	return Template;
 }

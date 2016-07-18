@@ -107,7 +107,7 @@ static function X2AbilityTemplate AddMarksmanMovementEffectsAbility()
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Effect_PersistentStatChange		StatChangeEffect;
-	local X2Condition_UnitDoesNotHaveAbility AbilityMissingCondition;
+	local ReconOperator_Condition_UnitDoesNotHaveAbility AbilityMissingCondition;
 	local X2Condition_UnitValue ValueCondition;
 	local X2AbilityTrigger_EventListener MoveFinishedListener;
 
@@ -141,7 +141,7 @@ static function X2AbilityTemplate AddMarksmanMovementEffectsAbility()
 
 	// The conditions:
 	// Check for the ability "ReconMarksmanSpecialization", if the target has it, don't apply.
-	AbilityMissingCondition = new class'X2Condition_UnitDoesNotHaveAbility';
+	AbilityMissingCondition = new class'ReconOperator_Condition_UnitDoesNotHaveAbility';
 	AbilityMissingCondition.OwnerDoesNotHaveSoldierAbility = 'ReconMarksmanSpecialization';
 	StatChangeEffect.TargetConditions.AddItem(AbilityMissingCondition);
 

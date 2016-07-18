@@ -1,6 +1,6 @@
 // Ensure the target unit does NOT have an ability.
 
-class X2Condition_UnitDoesNotHaveAbility extends X2Condition;
+class ReconOperator_Condition_UnitDoesNotHaveAbility extends X2Condition;
 
 var name OwnerDoesNotHaveSoldierAbility;
 

@@ -52,6 +52,9 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_CauseScamperEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Item_Carbine.uc">
       <SubType>Content</SubType>
     </Content>
@@ -70,16 +73,19 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_SituationalAwarenessCondition.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_TargetingMethod_Speculative.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_TestEffect.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_WeaponAbilities.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ReconSoldierClass\Classes\X2AbilityToHitCalc_ReconPinpointAccuracy.uc">
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AbilityToHitCalc_ReconPinpointAccuracy.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ReconSoldierClass\Classes\X2Condition_UnitDoesNotHaveAbility.uc">
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Condition_UnitDoesNotHaveAbility.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\X2DownloadableContentInfo_ReconSoldierClass.uc" />

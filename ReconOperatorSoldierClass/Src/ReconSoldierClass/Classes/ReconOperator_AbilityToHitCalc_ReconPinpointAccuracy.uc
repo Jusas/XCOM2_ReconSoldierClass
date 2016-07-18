@@ -1,4 +1,4 @@
-class X2AbilityToHitCalc_ReconPinpointAccuracy extends X2AbilityToHitCalc_StandardAim config(GameData_Effects);
+class ReconOperator_AbilityToHitCalc_ReconPinpointAccuracy extends X2AbilityToHitCalc_StandardAim config(GameData_Effects);
 
 var localized string PinpointAccuracyFriendlyName;
 var config float RECON_PINPOINTSHOT_COVER_REDUCTION_BONUS;
