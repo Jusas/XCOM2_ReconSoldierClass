@@ -31,6 +31,7 @@ var config bool RECON_BRINGEMON_CROSSCLASS_ELIGIBLE;
 var config bool RECON_SURVIVOR_CROSSCLASS_ELIGIBLE;
 var config int RECON_SURVIVOR_AIDKIT_HEAL_AMOUNT;
 var config int RECON_SURVIVOR_AIDKIT_CHARGES;
+var config bool RECON_RETURNFIRE_CROSSCLASS_ELIGIBLE;
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -39,9 +40,6 @@ var config int RECON_SURVIVOR_AIDKIT_CHARGES;
 static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
-
-	// Fire pistol, Double Tap, Concealment abilities are already defined by the game, so they aren't here.
-	// They're simply referred to in the INI file.
 
 	Templates.AddItem( AddLightFeetAbility() );
 	Templates.AddItem( AddSituationalAwarenessAbility() );
@@ -56,6 +54,10 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddSpeculativeFireAbility() );
 	Templates.AddItem( AddShooterAbility() );
 	Templates.AddItem( AddBringEmOnAbility() );
+	Templates.AddItem( AddSurvivorAbility() );
+	Templates.AddItem( AddSurvivorAidKitAbility() );
+	Templates.AddItem( AddReturnFireAbility() );
+	Templates.AddItem( StandardWeaponReturnFire() );
 	return Templates;
 
 }
@@ -283,9 +285,6 @@ static function X2AbilityTemplate AddSituationalAwarenessReaction()
 
 	// The damage effect.
 	Template.AddTargetEffect(new class'X2Effect_ApplyWeaponDamage');
-
-	// The miss effect? Does this apply the "miss" damage if stock is equipped?
-	Template.AddTargetEffect(default.WeaponUpgradeMissDamage);
 
 
 	// Knockback for the ragdoll if the target dies.
@@ -1061,7 +1060,7 @@ static function X2AbilityTemplate AddBringEmOnAbility()
 static function X2AbilityTemplate AddSurvivorAbility()
 {
 	local X2AbilityTemplate                 Template;
-	local ReconOperator_BringEmOn_Effect	Effect;
+	local ReconOperator_SurvivorArmorEffect	Effect;
 
 	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconSurvivor' );
 
@@ -1105,7 +1104,7 @@ static function X2AbilityTemplate AddSurvivorAidKitAbility()
 	local X2Effect_RemoveEffectsByDamageType RemoveEffects;
 	local X2AbilityCharges					Charges;
 	local X2AbilityCost_Charges				ChargeCost;
-
+	local X2AbilityCost_ActionPoints		ActionPointCost;
 
 	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconSurvivorAidKit' );
 
@@ -1113,11 +1112,8 @@ static function X2AbilityTemplate AddSurvivorAidKitAbility()
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
 	Template.Hostility = eHostility_Defensive;
 	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_survivor_aidkit";
-	Template.bIsPassive = true;
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.MEDIKIT_HEAL_PRIORITY;
-	Template.bUseAmmoAsChargesForHUD = true;
 	Template.bDisplayInUITooltip = false;
-	Template.bLimitTargetIcons = true;
 	
 	Charges = new class'X2AbilityCharges';
 	Charges.InitialCharges = default.RECON_SURVIVOR_AIDKIT_CHARGES;
@@ -1127,14 +1123,17 @@ static function X2AbilityTemplate AddSurvivorAidKitAbility()
 	ChargeCost.NumCharges = 1;
 	Template.AbilityCosts.AddItem(ChargeCost);
 
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
-
-	InputTrigger = new class'X2AbilityTrigger_PlayerInput';
-	Template.AbilityTriggers.AddItem(InputTrigger);
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
 
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeFullHealth = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
 	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 
 	MedikitHeal = new class'X2Effect_ApplyMedikitHeal';
@@ -1150,13 +1149,161 @@ static function X2AbilityTemplate AddSurvivorAidKitAbility()
 
 	Template.ActivationSpeech = 'HealingAlly';
 
-	Template.CustomSelfFireAnim = 'FF_FireMedkitSelf';
+	Template.CustomSelfFireAnim = 'FF_FireMedkitSelf'; // does not work; does not have the medikit "weapon".
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
 	Template.bCrossClassEligible = false;
 
 	`log("[ReconOperator]-> Survivor Ability template created");
+
+	return Template;
+}
+
+
+static function X2AbilityTemplate AddReturnFireAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2AbilityTargetStyle                  TargetStyle;
+	local X2AbilityTrigger						Trigger;
+	local ReconOperator_ReturnFireEffect        FireEffect;
+	local ReconOperator_ReturnFireHunkerDownEffect HunkerDownEffect;
+	local X2AbilityCost_ActionPoints			ActionPointCost;
+	local X2AbilityCooldown						Cooldown;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconReturnFire');
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_returnfire";
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Defensive;
+	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+	Template.AdditionalAbilities.AddItem('ReconStandardReturnFire');
+
+	Template.AbilityToHitCalc = default.DeadEye;
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = 3;
+	Template.AbilityCooldown = Cooldown;
+
+	TargetStyle = new class'X2AbilityTarget_Self';
+	Template.AbilityTargetStyle = TargetStyle;
+
+	// Triggered by the player.
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	// Costs no action points to activate.
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	FireEffect = new class'ReconOperator_ReturnFireEffect';
+	FireEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+	FireEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
+	Template.AddTargetEffect(FireEffect);
+
+	HunkerDownEffect = new class'ReconOperator_ReturnFireHunkerDownEffect';
+	HunkerDownEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+	HunkerDownEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	Template.AddTargetEffect(HunkerDownEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
+
+	Template.bCrossClassEligible = default.RECON_RETURNFIRE_CROSSCLASS_ELIGIBLE;
+
+	return Template;
+}
+
+
+// Return fire with the main weapon. Basically an overwatch shot. Mostly copied from the PistolReturnFire.
+
+static function X2AbilityTemplate StandardWeaponReturnFire()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2Condition_UnitProperty          ShooterCondition;
+	local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+	local X2AbilityTarget_Single            SingleTarget;
+	local X2AbilityTrigger_Event	        Trigger;
+	local X2Effect_Knockback				KnockbackEffect;
+	local array<name>                       SkipExclusions;
+	local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2AbilityCost_Ammo				AmmoCost;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconStandardReturnFire');
+
+
+	Template.bDontDisplayInAbilitySummary = true;
+	ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
+	ReserveActionPointCost.iNumPoints = 1;
+	ReserveActionPointCost.AllowedTypes.AddItem(class'ReconOperator_ReturnFireEffect'.default.GrantActionPoint);
+	Template.AbilityCosts.AddItem(ReserveActionPointCost);
+		
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+	
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bReactionFire = true;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);	
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bRequireBasicVisibility = true;
+	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots	
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+
+	Template.AbilityTargetConditions.AddItem(new class'X2Condition_EverVigilant');
+	Template.AbilityTargetConditions.AddItem(class'X2Ability_DefaultAbilitySet'.static.OverwatchTargetEffectsCondition());
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);	
+	ShooterCondition = new class'X2Condition_UnitProperty';
+	ShooterCondition.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(ShooterCondition);
+
+	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
+	Template.AddShooterEffectExclusions(SkipExclusions);
+	
+	SingleTarget = new class'X2AbilityTarget_Single';
+	SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
+	Template.AbilityTargetStyle = SingleTarget;
+
+	//Trigger on movement - interrupt the move
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	Template.CinescriptCameraType = "StandardGunFiring";	
+	
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_overwatch";
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.OVERWATCH_PRIORITY;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+	Template.DisplayTargetHitChance = false;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.bAllowFreeFireWeaponUpgrade = false;	
+	Template.bAllowAmmoEffects = true;
+
+	// Damage Effect
+	//
+	WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+	Template.AddTargetEffect(WeaponDamageEffect);
+	
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	KnockbackEffect.bUseTargetLocation = true;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	Template.bShowPostActivation = TRUE;
 
 	return Template;
 }

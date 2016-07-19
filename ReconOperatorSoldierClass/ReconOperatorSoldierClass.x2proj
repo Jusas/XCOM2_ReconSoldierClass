@@ -67,6 +67,12 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_MarkedEffect.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ReturnFireEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ReturnFireHunkerDownEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ScamperWatchEffect.uc">
       <SubType>Content</SubType>
     </Content>
