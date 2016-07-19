@@ -25,6 +25,12 @@ var config int RECON_DOUBLESHOT_SECONDSHOT_PENALTY; // Double shot second shot a
 var config float RECON_SPECULATIVEFIRE_RADIUS; // Radius of the speculative fire sphere
 var config bool RECON_SPECULATIVEFIRE_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 var config bool RECON_SHOOTER_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
+var config int RECON_BRINGEMON_BONUS_DAMAGE;
+var config int RECON_BRINGEMON_ENEMIES_PER_BONUS_STEP;
+var config bool RECON_BRINGEMON_CROSSCLASS_ELIGIBLE;
+var config bool RECON_SURVIVOR_CROSSCLASS_ELIGIBLE;
+var config int RECON_SURVIVOR_AIDKIT_HEAL_AMOUNT;
+var config int RECON_SURVIVOR_AIDKIT_CHARGES;
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -49,7 +55,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddDoubleShot2Ability() );
 	Templates.AddItem( AddSpeculativeFireAbility() );
 	Templates.AddItem( AddShooterAbility() );
-
+	Templates.AddItem( AddBringEmOnAbility() );
 	return Templates;
 
 }
@@ -71,7 +77,7 @@ static function X2AbilityTemplate AddLightFeetAbility()
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_dash";
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_sprinter";
 	Template.bIsPassive = true;
 
 	Template.AbilityToHitCalc = default.DeadEye;
@@ -1001,6 +1007,156 @@ static function X2AbilityTemplate AddShooterAbility()
 	Template = PurePassive('ReconShooter', "img:///UILibrary_ReconOperator.UIPerk_shooter", default.RECON_SHOOTER_CROSSCLASS_ELIGIBLE);
 	Template.AdditionalAbilities.AddItem('StandardShot_NoEnd');
 	Template.OverrideAbilities.AddItem('StandardShot');
+
+	return Template;
+}
+
+
+// -----------------------------------------------------------------------------------------------------
+// Bring Em On ability, adding offensive bonuses when multiple enemies are in sight.
+// -----------------------------------------------------------------------------------------------------
+
+
+static function X2AbilityTemplate AddBringEmOnAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local ReconOperator_BringEmOn_Effect	Effect;
+
+	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconBringEmOn' );
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_bringemon";
+	Template.bIsPassive = true;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	
+	// Simple enough, we just add a persistent stat change for eStat_Mobility.
+	Effect = new class'ReconOperator_BringEmOn_Effect';
+	Effect.EffectName = 'ReconBringEmOn';
+	Effect.BonusDmg = default.RECON_BRINGEMON_BONUS_DAMAGE;
+	Effect.VisibleEnemiesPerBonusStep = default.RECON_BRINGEMON_ENEMIES_PER_BONUS_STEP;
+	Effect.BuildPersistentEffect(1, true, false);
+	Effect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,,Template.AbilitySourceName);
+	Template.AddTargetEffect(Effect);		
+
+	Template.bCrossClassEligible = default.RECON_BRINGEMON_CROSSCLASS_ELIGIBLE;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
+
+	`log("[ReconOperator]-> Bring Em On Ability template created");
+
+	return Template;
+}
+
+
+// -----------------------------------------------------------------------------------------------------
+// Survivor ability, adding extra armor and a self first aid kit.
+// -----------------------------------------------------------------------------------------------------
+
+static function X2AbilityTemplate AddSurvivorAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local ReconOperator_BringEmOn_Effect	Effect;
+
+	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconSurvivor' );
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_survivor";
+	Template.bIsPassive = true;
+	Template.AdditionalAbilities.AddItem('ReconSurvivorAidKit');
+
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.ArmorLabel, eStat_ArmorMitigation, class'ReconOperator_SurvivorArmorEffect'.default.RECON_SURVIVOR_ARMOR_MITIGATION);
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	
+	Effect = new class'ReconOperator_SurvivorArmorEffect';
+	Effect.EffectName = 'ReconSurvivorArmorEffect';	
+	Effect.BuildPersistentEffect(1, true, false);
+	Effect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,,Template.AbilitySourceName);
+	Template.AddTargetEffect(Effect);		
+
+	Template.bCrossClassEligible = default.RECON_SURVIVOR_CROSSCLASS_ELIGIBLE;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
+
+	`log("[ReconOperator]-> Survivor Ability template created");
+
+	return Template;
+}
+
+// Survivor first aid kit - note: not intended for other than self healing.
+
+static function X2AbilityTemplate AddSurvivorAidKitAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local ReconOperator_BringEmOn_Effect	Effect;
+	local X2Condition_UnitProperty			UnitPropertyCondition;
+	local X2Effect_ApplyMedikitHeal			MedikitHeal;
+	local X2Effect_RemoveEffectsByDamageType RemoveEffects;
+	local X2AbilityCharges					Charges;
+	local X2AbilityCost_Charges				ChargeCost;
+
+
+	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconSurvivorAidKit' );
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Defensive;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_survivor_aidkit";
+	Template.bIsPassive = true;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.MEDIKIT_HEAL_PRIORITY;
+	Template.bUseAmmoAsChargesForHUD = true;
+	Template.bDisplayInUITooltip = false;
+	Template.bLimitTargetIcons = true;
+	
+	Charges = new class'X2AbilityCharges';
+	Charges.InitialCharges = default.RECON_SURVIVOR_AIDKIT_CHARGES;
+	Template.AbilityCharges = Charges;
+
+	ChargeCost = new class'X2AbilityCost_Charges';
+	ChargeCost.NumCharges = 1;
+	Template.AbilityCosts.AddItem(ChargeCost);
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+
+	InputTrigger = new class'X2AbilityTrigger_PlayerInput';
+	Template.AbilityTriggers.AddItem(InputTrigger);
+
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeFullHealth = true;
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+
+	MedikitHeal = new class'X2Effect_ApplyMedikitHeal';
+	MedikitHeal.PerUseHP = default.RECON_SURVIVOR_AIDKIT_HEAL_AMOUNT;
+	Template.AddTargetEffect(MedikitHeal);
+
+	RemoveEffects = new class'X2Effect_RemoveEffectsByDamageType';
+	RemoveEffects.DamageTypesToRemove.AddItem('Fire');
+	RemoveEffects.DamageTypesToRemove.AddItem('Poison');
+	RemoveEffects.DamageTypesToRemove.AddItem(class'X2Effect_ParthenogenicPoison'.default.ParthenogenicPoisonType);
+	RemoveEffects.DamageTypesToRemove.AddItem('Acid');
+	Template.AddTargetEffect(RemoveEffects);
+
+	Template.ActivationSpeech = 'HealingAlly';
+
+	Template.CustomSelfFireAnim = 'FF_FireMedkitSelf';
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	Template.bCrossClassEligible = false;
+
+	`log("[ReconOperator]-> Survivor Ability template created");
 
 	return Template;
 }

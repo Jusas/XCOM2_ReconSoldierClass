@@ -52,6 +52,9 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_BringEmOn_Effect.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_CauseScamperEffect.uc">
       <SubType>Content</SubType>
     </Content>
@@ -71,6 +74,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_SituationalAwarenessCondition.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_SurvivorArmorEffect.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_TargetingMethod_Speculative.uc">
