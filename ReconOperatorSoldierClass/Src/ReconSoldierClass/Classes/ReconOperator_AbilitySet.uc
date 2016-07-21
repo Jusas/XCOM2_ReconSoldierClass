@@ -32,6 +32,12 @@ var config bool RECON_SURVIVOR_CROSSCLASS_ELIGIBLE;
 var config int RECON_SURVIVOR_AIDKIT_HEAL_AMOUNT;
 var config int RECON_SURVIVOR_AIDKIT_CHARGES;
 var config bool RECON_RETURNFIRE_CROSSCLASS_ELIGIBLE;
+var config int RECON_RETURNFIRE_COOLDOWN;
+var config int RECON_EXTREME_PREJUDICE_COOLDOWN;
+var config bool RECON_EXTREME_PREJUDICE_CROSSCLASS_ELIGIBLE;
+var config int RECON_EXTREME_PREJUDICE_TILE_WIDTH;
+var config int RECON_EXTREME_PREJUDICE_TILE_LENGTH;
+var config int RECON_EXTREME_PREJUDICE_ACC_PENALTY;
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -58,6 +64,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( AddSurvivorAidKitAbility() );
 	Templates.AddItem( AddReturnFireAbility() );
 	Templates.AddItem( StandardWeaponReturnFire() );
+	Templates.AddItem( AddExtremePrejudiceAbility() );
+	Templates.AddItem( AddExtremePrejudiceShot() );
 	return Templates;
 
 }
@@ -450,7 +458,7 @@ static function X2AbilityTemplate AddMarksmanSpecializationAbility()
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_scope";
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_marksman";
 
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
@@ -464,7 +472,7 @@ static function X2AbilityTemplate AddMarksmanSpecializationAbility()
 	PersistentEffect = new class'X2Effect_Persistent';
 	PersistentEffect.EffectName = 'ReconMarksmanSpecialization';
 	PersistentEffect.BuildPersistentEffect(1, true, true, false);
-	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, false,,Template.AbilitySourceName);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true,,Template.AbilitySourceName);
 	Template.AddTargetEffect(PersistentEffect);
 
 	// Cross-class eligibility
@@ -1183,7 +1191,7 @@ static function X2AbilityTemplate AddReturnFireAbility()
 	Template.AbilityToHitCalc = default.DeadEye;
 
 	Cooldown = new class'X2AbilityCooldown';
-	Cooldown.iNumTurns = 3;
+	Cooldown.iNumTurns = default.RECON_RETURNFIRE_COOLDOWN;
 	Template.AbilityCooldown = Cooldown;
 
 	TargetStyle = new class'X2AbilityTarget_Self';
@@ -1192,9 +1200,13 @@ static function X2AbilityTemplate AddReturnFireAbility()
 	// Triggered by the player.
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
 
-	// Costs no action points to activate.
+	// Require one point to activate but do not consume it.
+	// If we don't require any activation points the turn will not end on its own
+	// because there's still an action that the soldier can perform when all action
+	// points have already been spent.
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.bFreeCost = true;
+	ActionPointCost.iNumPoints = 1;
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
 	FireEffect = new class'ReconOperator_ReturnFireEffect';
@@ -1208,7 +1220,9 @@ static function X2AbilityTemplate AddReturnFireAbility()
 	Template.AddTargetEffect(HunkerDownEffect);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  NOTE: No visualization on purpose!
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.bSkipFireAction = true;
+	Template.bShowActivation = true;
 
 	Template.bCrossClassEligible = default.RECON_RETURNFIRE_CROSSCLASS_ELIGIBLE;
 
@@ -1307,3 +1321,237 @@ static function X2AbilityTemplate StandardWeaponReturnFire()
 
 	return Template;
 }
+
+
+
+static function X2AbilityTemplate AddExtremePrejudiceAbility()
+{
+	local X2AbilityTemplate             Template;
+	local X2AbilityCooldown             Cooldown;
+	local X2AbilityCost_Ammo            AmmoCost;
+	local X2AbilityCost_ActionPoints    ActionPointCost;
+	local X2AbilityTarget_Cursor        CursorTarget;
+	local X2AbilityMultiTarget_Cone     ConeMultiTarget;
+	local X2Effect_ReserveActionPoints  ReservePointsEffect;
+	local X2Effect_MarkValidActivationTiles MarkTilesEffect;
+	local X2Condition_UnitEffects           SuppressedCondition;
+	local X2AbilityMultiTarget_Radius		MultiTarget;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconExtremePrejudice');
+
+	Template.AdditionalAbilities.AddItem('ReconExtremePrejudiceOverwatchShot');
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	AmmoCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 2;
+	ActionPointCost.bConsumeAllPoints = true;   //  this will guarantee the unit has at least 1 action point
+	ActionPointCost.bFreeCost = true;           //  ReserveActionPoints effect will take all action points away
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.RECON_EXTREME_PREJUDICE_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	ReservePointsEffect = new class'X2Effect_ReserveActionPoints';
+	ReservePointsEffect.ReserveType = 'ReconExtremePrejudice';
+	Template.AddShooterEffect(ReservePointsEffect);
+	
+	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_extreme_prejudice";
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+	Template.Hostility = eHostility_Defensive;
+	Template.AbilityConfirmSound = "Unreal2DSounds_OverWatch";
+
+	Template.ActivationSpeech = 'KillZone';
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.bSkipFireAction = true;
+	Template.bShowActivation = true;
+
+	Template.CinescriptCameraType = "Overwatch";
+
+	Template.bCrossClassEligible = default.RECON_EXTREME_PREJUDICE_CROSSCLASS_ELIGIBLE;
+
+	`log("[ReconOperator]-> ReconExtremePrejudice Ability template created");
+
+	return Template;
+}
+
+
+static function X2AbilityTemplate AddExtremePrejudiceShot()
+{
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2AbilityTrigger_Event			Trigger;
+	local X2AbilityTemplate                 Template;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local ReconOperator_SituationalAwarenessCondition Condition;
+	local X2Effect_SetUnitValueVerbose		ShooterUnitValueEffect;
+	local X2Condition_Visibility			TargetVisibilityCondition;
+	local X2Effect_Persistent				SATargetEffect;
+	local X2Condition_UnitEffectsWithAbilitySource SATargetCondition;
+	local X2Effect_Knockback				KnockBackEffect;
+	local X2AbilityTarget_Single			SingleTarget;
+	local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
+	local X2Effect_ReserveActionPoints		ReservePointsEffect;
+	local X2Effect_PersistentStatChange		StatChange;
+	local X2Effect_BreakUnitConcealment		BreakConcealment;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconExtremePrejudiceOverwatchShot');
+
+	// Standard aim, reaction fire penalties apply.
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bReactionFire = true;
+	
+	// No crits on overwatch.
+	StandardAim.bAllowCrit = false;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	
+	// Single target in weapons range.
+	SingleTarget = new class'X2AbilityTarget_Single';
+    SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
+    Template.AbilityTargetStyle = SingleTarget;
+	
+	// Don't show the icon; the dummy ability icon is already visible anyway.
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';	
+	Template.Hostility = eHostility_Defensive;
+	
+	// Costs one ammo.
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
+	ReserveActionPointCost.iNumPoints = 1;
+	ReserveActionPointCost.AllowedTypes.AddItem('ReconExtremePrejudice');
+	Template.AbilityCosts.AddItem(ReserveActionPointCost);
+
+	ReservePointsEffect = new class'X2Effect_ReserveActionPoints';
+	ReservePointsEffect.ReserveType = 'ReconExtremePrejudice';
+	ReservePointsEffect.SetupEffectOnShotContextResult(true, true);
+	Template.AddShooterEffect(ReservePointsEffect);
+
+	BreakConcealment = new class'X2Effect_BreakUnitConcealment';
+	BreakConcealment.SetupEffectOnShotContextResult(true, true);
+	Template.AddShooterEffect(BreakConcealment);
+	
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireBasicVisibility = true;
+	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots	
+	TargetVisibilityCondition.bAllowSquadsight = true;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+
+	Template.bAllowFreeFireWeaponUpgrade = false;	
+
+	// Allow ammo effects (AP, incendiary, etc) to apply here.
+	Template.bAllowAmmoEffects = true;
+
+	// Knockback for the ragdoll if the target dies.
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	KnockbackEffect.bUseTargetLocation = true;
+	Template.AddTargetEffect(KnockbackEffect);
+	
+	//Trigger on movement - interrupt the move
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_AttackObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+
+	StatChange = new class'X2Effect_PersistentStatChange';
+	StatChange.EffectName = 'ReconExtremePrejudiceAccuracyPenalty';
+	StatChange.AddPersistentStatChange(eStat_Offense, default.RECON_EXTREME_PREJUDICE_ACC_PENALTY);
+	StatChange.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);	
+	StatChange.SetupEffectOnShotContextResult(true, true);
+	Template.AddShooterEffect(StatChange);
+
+	/*
+	Trigger = new class'X2AbilityTrigger_EventListener';
+	Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
+	Trigger.ListenerData.EventID = 'ReconExtremePrejudiceOverwatchShot';
+	Trigger.ListenerData.Filter = eFilter_Unit;
+	Trigger.ListenerData.EventFn = static.RepeatingExtremePrejudiceShotListener;
+	Template.AbilityTriggers.AddItem(Trigger);
+	*/
+
+	// Targeting Method
+	//Template.TargetingMethod = class'X2TargetingMethod_OverTheShoulder';
+	//Template.CinescriptCameraType = "StandardGunFiring";
+	Template.BuildVisualizationFn = class'X2Ability_DefaultAbilitySet'.static.OverwatchAbility_BuildVisualization;
+	Template.CinescriptCameraType = "Overwatch";
+
+
+	//  Put holo target effect first because if the target dies from this shot, it will be too late to notify the effect.
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+	// Damage Effect
+	//
+	Template.AddTargetEffect(default.WeaponUpgradeMissDamage);
+
+	//Template.AdditionalAbilities.AddItem('ReconExtremePrejudiceShotRepeating');
+
+	// Post activation, start a repeating action with this.
+	//Template.PostActivationEvents.AddItem('ReconExtremePrejudiceOverwatchShot');
+
+
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;	
+
+	Template.bShowActivation = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	`log("[ReconOperator]-> ReconExtremePrejudiceOverwatchShot Ability template created");
+
+	return Template;
+}
+
+/*
+static function EventListenerReturn RepeatingExtremePrejudiceShotListener(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
+{
+	local XComGameStateContext_Ability AbilityContext;
+	local StateObjectReference AbilityRef;
+	local XComGameState_Ability Ability;
+	local XComGameStateHistory History;
+	local XComGameState_Unit UnitState;
+
+	`log("[ReconOperator]-> RepeatingExtremePrejudiceShotListener triggered");
+
+	AbilityContext = XComGameStateContext_Ability(GameState.GetContext());
+	UnitState = XComGameState_Unit(EventSource);
+	History = `XCOMHISTORY;
+
+	AbilityRef = UnitState.FindAbility('ReconExtremePrejudiceOverwatchShot');
+	Ability = XComGameState_Ability(History.GetGameStateForObjectID(AbilityRef.ObjectID));
+	`log("[ReconOperator]-> RepeatingExtremePrejudiceShotListener ability name: " $ Ability.GetMyTemplateName());
+	AbilityContext.InputContext.
+	Ability.AbilityTriggerAgainstSingleTarget(AbilityContext.InputContext.PrimaryTarget, false);
+
+	return ELR_NoInterrupt;
+}
+*/
