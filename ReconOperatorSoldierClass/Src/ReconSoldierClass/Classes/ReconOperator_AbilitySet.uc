@@ -38,6 +38,7 @@ var config bool RECON_EXTREME_PREJUDICE_CROSSCLASS_ELIGIBLE;
 var config int RECON_EXTREME_PREJUDICE_TILE_WIDTH;
 var config int RECON_EXTREME_PREJUDICE_TILE_LENGTH;
 var config int RECON_EXTREME_PREJUDICE_ACC_PENALTY;
+var config int RECON_ADRENALINE_CHANCE;
 
 // -----------------------------------------------------------------------------------------------------
 // "Entry point"
@@ -48,6 +49,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	local array<X2DataTemplate> Templates;
 
 	Templates.AddItem( AddLightFeetAbility() );
+	Templates.AddItem( AddSquaddieAbility() );
 	Templates.AddItem( AddSituationalAwarenessAbility() );
 	Templates.AddItem( AddSituationalAwarenessWatcher() );
 	Templates.AddItem( AddSituationalAwarenessReaction() );
@@ -66,11 +68,80 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem( StandardWeaponReturnFire() );
 	Templates.AddItem( AddExtremePrejudiceAbility() );
 	Templates.AddItem( AddExtremePrejudiceShot() );
+	Templates.AddItem( AddAdrenalineAbility() );
 	return Templates;
 
 }
 
+static function X2AbilityTemplate AddAdrenalineAbility()
+{
+	local X2AbilityTemplate                 Template;
+	local X2Effect_PersistentStatChange		PersistentStatChangeEffect;
+	local X2AbilityTrigger_EventListener	Trigger;
+	local ReconOperator_AdrenalineSpikeEffect Effect;
+	local X2Condition_UnitEffects			ExcludeEffects;
+	local X2Effect_TurnStartActionPoints	AddAPEffect;
+	local X2AbilityTarget_Self				TargetStyle;
 
+	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconAdrenalineSpike' );
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_adrenaline";
+	
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
+	
+	Trigger = new class'X2AbilityTrigger_EventListener';
+	Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
+	Trigger.ListenerData.EventID = 'UnitTakeEffectDamage';
+	Trigger.ListenerData.Filter = eFilter_Unit;
+	Trigger.ListenerData.EventFn = class'XComGameState_Ability'.static.AbilityTriggerEventListener_Self;
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	TargetStyle = new class'X2AbilityTarget_Self';
+	Template.AbilityTargetStyle = TargetStyle;
+
+	ExcludeEffects = new class'X2Condition_UnitEffects';
+	ExcludeEffects.AddExcludeEffect('ReconAdrenalineSpiked', 'AA_UnitIsAdrenalineSpiked');
+	Template.AbilityShooterConditions.AddItem(ExcludeEffects);
+	
+	AddAPEffect = new class'X2Effect_TurnStartActionPoints';
+	AddAPEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnEnd);
+	AddAPEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,,Template.AbilitySourceName);
+	AddAPEffect.EffectName = 'ReconAdrenalineSpiked';
+	AddAPEffect.ActionPointType = class'X2CharacterTemplateManager'.default.StandardActionPoint;
+	AddAPEffect.NumActionPoints = 1;
+	AddAPEffect.ApplyChance = default.RECON_ADRENALINE_CHANCE;
+	Template.AddTargetEffect(AddAPEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.bSkipFireAction = true;
+	Template.bShowActivation = true;
+
+	`log("[ReconOperator]-> Adrenaline Ability template created");
+
+
+
+
+	return Template;
+}
+
+static function X2AbilityTemplate AddSquaddieAbility()
+{
+	local X2AbilityTemplate                 Template;
+
+	// A purely cosmetic ability.
+	Template = PurePassive('ReconSquaddie', "img:///UILibrary_ReconOperator.UIPerk_reconsquaddie", false);
+	
+	`log("[ReconOperator]-> ReconSquaddie Ability template created");
+
+	return Template;
+}
 
 // -----------------------------------------------------------------------------------------------------
 // Light Feet, giving a bonus to mobility and stealth.
@@ -83,12 +154,13 @@ static function X2AbilityTemplate AddLightFeetAbility()
 
 	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconLightFeet' );
 
-	
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_sprinter";
+	Template.IconImage = "img:///UILibrary_ReconOperator.UIPerk_lightfeet";
 	Template.bIsPassive = true;
+
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.RECON_LIGHTFEET_MOBILITY);
 
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;

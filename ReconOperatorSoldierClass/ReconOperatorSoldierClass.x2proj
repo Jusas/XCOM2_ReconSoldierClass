@@ -38,6 +38,9 @@
     <Content Include="Content\UILibrary_ReconOperator.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\UILibrary_ReconOperatorWeapons.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\ReconSoldierClass.int">
       <SubType>Content</SubType>
     </Content>
@@ -52,10 +55,19 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AcademyUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_AdrenalineSpikeEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_BringEmOn_Effect.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_CauseScamperEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_GTS_ScreenListener.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_Item_Carbine.uc">
