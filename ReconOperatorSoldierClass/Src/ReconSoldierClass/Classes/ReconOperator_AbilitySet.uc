@@ -76,9 +76,7 @@ static function array<X2DataTemplate> CreateTemplates()
 static function X2AbilityTemplate AddAdrenalineAbility()
 {
 	local X2AbilityTemplate                 Template;
-	local X2Effect_PersistentStatChange		PersistentStatChangeEffect;
 	local X2AbilityTrigger_EventListener	Trigger;
-	local ReconOperator_AdrenalineSpikeEffect Effect;
 	local X2Condition_UnitEffects			ExcludeEffects;
 	local X2Effect_TurnStartActionPoints	AddAPEffect;
 	local X2AbilityTarget_Self				TargetStyle;
@@ -222,7 +220,7 @@ static function X2AbilityTemplate AddSituationalAwarenessAbility()
 	// in those two abilities.
 	// PurePassive creates a dummy persistent effect which displays the 'rapidreaction' icon.
 	// Also made available for the AWC training roulette.
-	Template = PurePassive('ReconSituationalAwareness', "img:///UILibrary_PerkIcons.UIPerk_rapidreaction", true);
+	Template = PurePassive('ReconSituationalAwareness', "img:///UILibrary_ReconOperator.UIPerk_situational_awareness", true);
 	Template.AdditionalAbilities.AddItem('ReconSituationalAwarenessWatcher');
 	Template.AdditionalAbilities.AddItem('ReconSituationalAwarenessReaction');
 	
@@ -1004,13 +1002,10 @@ static function X2AbilityTemplate AddSpeculativeFireAbility()
 	local X2AbilityTemplate					Template;
 	local X2AbilityCost_ActionPoints		ActionPointCost;
 	local X2AbilityCost_Ammo				AmmoCost;
-	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
 	local X2AbilityCooldown                 Cooldown;
-	local X2Condition_Visibility			TargetVisibilityCondition;
 	local X2AbilityTarget_Cursor			CursorTarget;
 	local X2AbilityMultiTarget_Radius		MultiTarget;
 	local ReconOperator_CauseScamperEffect	Effect;
-	local X2TargetingMethod_GremlinAOE		TargetingMethod;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconSpeculativeFire');
 
@@ -1178,7 +1173,6 @@ static function X2AbilityTemplate AddSurvivorAbility()
 static function X2AbilityTemplate AddSurvivorAidKitAbility()
 {
 	local X2AbilityTemplate                 Template;
-	local ReconOperator_BringEmOn_Effect	Effect;
 	local X2Condition_UnitProperty			UnitPropertyCondition;
 	local X2Effect_ApplyMedikitHeal			MedikitHeal;
 	local X2Effect_RemoveEffectsByDamageType RemoveEffects;
@@ -1245,7 +1239,6 @@ static function X2AbilityTemplate AddReturnFireAbility()
 {
 	local X2AbilityTemplate						Template;
 	local X2AbilityTargetStyle                  TargetStyle;
-	local X2AbilityTrigger						Trigger;
 	local ReconOperator_ReturnFireEffect        FireEffect;
 	local ReconOperator_ReturnFireHunkerDownEffect HunkerDownEffect;
 	local X2AbilityCost_ActionPoints			ActionPointCost;
@@ -1402,12 +1395,8 @@ static function X2AbilityTemplate AddExtremePrejudiceAbility()
 	local X2AbilityCooldown             Cooldown;
 	local X2AbilityCost_Ammo            AmmoCost;
 	local X2AbilityCost_ActionPoints    ActionPointCost;
-	local X2AbilityTarget_Cursor        CursorTarget;
-	local X2AbilityMultiTarget_Cone     ConeMultiTarget;
 	local X2Effect_ReserveActionPoints  ReservePointsEffect;
-	local X2Effect_MarkValidActivationTiles MarkTilesEffect;
 	local X2Condition_UnitEffects           SuppressedCondition;
-	local X2AbilityMultiTarget_Radius		MultiTarget;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconExtremePrejudice');
 
@@ -1472,15 +1461,10 @@ static function X2AbilityTemplate AddExtremePrejudiceAbility()
 static function X2AbilityTemplate AddExtremePrejudiceShot()
 {
 	local X2AbilityCost_Ammo				AmmoCost;
-	local X2AbilityCost_ActionPoints		ActionPointCost;
 	local X2AbilityTrigger_Event			Trigger;
 	local X2AbilityTemplate                 Template;
 	local X2AbilityToHitCalc_StandardAim    StandardAim;
-	local ReconOperator_SituationalAwarenessCondition Condition;
-	local X2Effect_SetUnitValueVerbose		ShooterUnitValueEffect;
 	local X2Condition_Visibility			TargetVisibilityCondition;
-	local X2Effect_Persistent				SATargetEffect;
-	local X2Condition_UnitEffectsWithAbilitySource SATargetCondition;
 	local X2Effect_Knockback				KnockBackEffect;
 	local X2AbilityTarget_Single			SingleTarget;
 	local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
@@ -1561,6 +1545,7 @@ static function X2AbilityTemplate AddExtremePrejudiceShot()
 	StatChange.EffectName = 'ReconExtremePrejudiceAccuracyPenalty';
 	StatChange.AddPersistentStatChange(eStat_Offense, default.RECON_EXTREME_PREJUDICE_ACC_PENALTY);
 	StatChange.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);	
+	StatChange.DuplicateResponse = eDupe_Allow;
 	StatChange.SetupEffectOnShotContextResult(true, true);
 	Template.AddShooterEffect(StatChange);
 

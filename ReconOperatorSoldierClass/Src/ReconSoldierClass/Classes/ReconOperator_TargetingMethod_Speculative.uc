@@ -19,7 +19,6 @@ function Update(float DeltaTime)
 	local bool GoodView;
 	local CachedCoverAndPeekData PeekData;
 	local array<TTile> Tiles;
-	local float TargetingRange;
 	local vector TempTargetLocation;
 	local array<Vector> TargetLocs;
 	

@@ -16,14 +16,11 @@ static function EventListenerReturn OnDamageTaken(Object EventData, Object Event
 {
 	local XComGameState_Unit HitUnit;
 	local XComGameState_Unit NewHitUnitState;
-	local StateObjectReference ReturnFireRef;
 	local StateObjectReference ObjectRef;
 	local XComGameState_Ability AbilityState;
 	local XComGameStateHistory History;
 	local XComGameState_Effect EffectState;
 	local XComGameState NewGameState;
-	local XComGameState_Effect NewEffectState;
-	local ReconOperator_ReturnFireEffect ReturnFireEffect;
 	local XComGameStateContext_EffectRemoved EffectRemovedState;
 
 	`log("[ReconOperator]-> OnDamageTaken");

@@ -56,7 +56,9 @@ static function array<X2DataTemplate> CreateTemplates()
 		return Carbines;
 	}
 
-	//add SMG to the DefaultUpgrades Templates so that upgrades work with new weapon
+	SetWeaponSchematics(ItemTemplateManager);
+
+	//add weapon to the DefaultUpgrades Templates so that upgrades work with new weapon
 	//this doesn't make the upgrade available, it merely configures the art
 	AddCritUpgrade(ItemTemplateManager, 'CritUpgrade_Bsc');
 	AddCritUpgrade(ItemTemplateManager, 'CritUpgrade_Adv');
@@ -91,6 +93,30 @@ static function array<X2DataTemplate> CreateTemplates()
 	return Carbines;
 }
 
+// Piggybacking the rifle schematics.
+static function SetWeaponSchematics(X2ItemTemplateManager ItemTemplateManager)
+{
+	local X2SchematicTemplate Template;
+
+	Template = X2SchematicTemplate(ItemTemplateManager.FindItemTemplate('AssaultRifle_MG_Schematic'));
+	if(Template == none) 
+	{
+		`Redscreen("[ReconOperator]-> Item_Carbine: Failed to find schematic template AssaultRifle_MG_Schematic");
+		return;
+	}
+
+	Template.ItemsToUpgrade.AddItem('ReconCarbine_CV');
+	
+	Template = X2SchematicTemplate(ItemTemplateManager.FindItemTemplate('AssaultRifle_BM_Schematic'));
+	if(Template == none) 
+	{
+		`Redscreen("[ReconOperator]-> Item_Carbine: Failed to find schematic template AssaultRifle_BM_Schematic");
+		return;
+	}	
+	
+	Template.ItemsToUpgrade.AddItem('ReconCarbine_MG');
+	
+}
 
 static function X2DataTemplate AddCarbineCV()
 {

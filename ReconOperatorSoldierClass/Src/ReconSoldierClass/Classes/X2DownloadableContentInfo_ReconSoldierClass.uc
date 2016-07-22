@@ -2,7 +2,7 @@ class X2DownloadableContentInfo_ReconSoldierClass extends X2DownloadableContentI
 
 var array<name> ReconWeaponTemplateNames;
 
-static event OnLoadedSavedGame()
+static event OnLoadedSavedGameToStrategy()
 {
 	local XComGameState NewGameState;
 	local XComGameStateHistory History;
@@ -19,7 +19,7 @@ static event OnLoadedSavedGame()
 	XComHQ = XComGameState_HeadquartersXCom(NewGameState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
 	NewGameState.AddStateObject(XComHQ);
 
-	`Log("[ReconOperator]-> OnLoadedSavedGame");
+	`Log("[ReconOperator]-> OnLoadedSavedGameToStrategy");
 
 	`Log("[ReconOperator]-> Updating weapons that came with the mod to the saved game XCOMHQ");
 

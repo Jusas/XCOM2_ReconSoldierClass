@@ -1,0 +1,110 @@
+
+Recon Class for XCOM 2
+
+
+Introducing a new soldier class to XCOM 2: The Recon Class!
+
+The inspiration behind this class was to provide an option, or a supplement if you like, to the straight up "boxed" classes like the Ranger and the Sharpshooter. With the Recon class you can choose between two supplementing training paths: Recon Sniper and Force Recon - or of course, create a funky mixture if you like. Both paths share the three basic abilities: Phantom (remains concealed when others get revealed), Light Feet (+3 to mobility) and Fire Pistol. This implies the classes are meant to quite heavily utilize mobility and stealth.
+
+The class can equip Rifles, Shotguns, Carbines and Marksman Rifles. The Carbine and the Marksman Rifle are new weapons and come with this mod, and both belong to the Rifle category. More on the new weapons further below.
+
+
+Recon Sniper
+
+The Recon Sniper is the more supporting role of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 5% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot incurs an accuracy penalty.
+The Recon Sniper is not a pure sniper even though its name might imply that. The subclass relies on the Marksman Rifle, a longer range version of the Assault Rifle, which provides Squadsight to the soldier. The Marksman Rifle is at its best at medium and just beyond medium ranges but incurs accuracy penalties at extreme ranges, and lacks the punch of the higher caliber sniper rifles. It's quite possible and sensible to use the standard Assault Rifle with the Recon Sniper, although in that case you probably want to go for the Force Recon tree ability instead of the Marksman.
+
+
+Force Recon
+
+The Force Recon subclass is the aggressive counterpart of the Recon Sniper. Whereas the sniper would stay at a good distance, the Force Recon is always in the thick of it. Similar to the Ranger, the ability tree emphasizes close quarters combat and being in the thick of it - this is literally your point man. Its main distinctive perk is the Shooter ability, allowing the soldier to move after taking a standard shot. The Situational Awareness ability evens the field when the Force Recon encounters an enemy: if the soldier alerts an alien pod to its presence, the soldier gets a quick reaction shot at one of the scampering enemies. And while the Recon Sniper would hold back and take a Concealed Shot, the Force Recon can try to flush out the enemy using Speculative Fire, firing at suspected enemy positions. If the soldier is packing AP ammo it can even fire through walls in an effort to get the aliens' attention. When the action really gets tough, the soldier can decide to stay in cover and use the Return Fire ability, enabling the soldier to respond up to 3 attacks by attempting to return fire and causing the soldier to hunker down if hit. The Survivor ability grants the soldier +1 armor point and a first aid kit that can heal the soldier +4 HP once per mission. To even further encourage staying it the thick of it, the Colonel level ability Fighting Spirit adds a +1 damage bonus per 2 aliens in sight.
+The Carbine was specifically created for this class, as the soldier spends most of its time at close to medium ranges. It provides good accuracy at short to medium ranges but suffers from accuracy penalties at longer ranges. The soldier performs quite well with the standard Assault Rifle and the Shotgun as well, so the choice is yours.
+
+
+The Abilty Tree
+
+Squaddie
+
+Light Feet
+Gains +3 mobility and a 20% smaller detection radius.
+
+Phantom
+Soldier stays concealed when the rest of the squad is revealed.
+
+Fire Pistol
+Ability to equip and fire the pistol standard shot and overwatch.
+
+
+
+Recon Sniper
+
+Marksman
+Removes the moving penalty from the Marksman Rifle and enables Squadsight for the Marksman Rifle.
+
+Reconnoiter
+All enemies in a small cone get reconnoitered for an accuracy and critical hit chance bonus for the whole squad, does not reveal the operator. 3 turn cooldown.
+
+Concealed Shot
+Allows firing a shot without revealing the operator. 3 turn cooldown.
+
+Double Shot
+Fires two shots at the same target, with the second shot incurring a 15% accuracy penalty. 4 turn cooldown.
+
+Pinpoint Accuracy
+Allows firing a shot that ignores 50% of the high/low cover defense bonus. 4 turn cooldown.
+
+Extreme Prejudice
+Enhanced overwatch. The operator applies all its skill to fire as many rounds to its targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip. Each consecutive shot incurs a 5% accuracy penalty. Can be activated from Concealment (breaks concealment when firing). Marksman Rifle squadsight applies. 5 turn cooldown.
+
+
+Force Recon
+
+Shooter
+Taking a Standard Shot no longer ends the turn.
+
+Situational Awareness
+If an enemy spawn is triggered by this operator's movement, a free immediate reaction fire is granted with the primary weapon, once per turn. Passive skill.
+
+Speculative Fire
+Fire at suspected enemy positions to trigger an enemy spawn. Can fire through obstacles if Armor Piercing Ammo is equipped. 4 turn cooldown.
+
+Return Fire
+Grants the operator the ability to return fire against up to 3 attacks on the enemy's next turn. If the operator gets hit while the ability is active the operator automatically hunkers down for more cover. Free activation. 3 turn cooldown.
+
+Survivor
+Grants the operator improvised armor plating, adding 1 point of armor. Also grants the operator the ability to administer emergency first aid to self heal, healing 4hp. The first aid also removes fire, acid and poison effects. Can be used once per mission.
+
+Fighting Spirit
+Grants +1 extra weapon damage per two enemies in sight. Passive skill.
+
+
+You can also unlock an additional ability from the GTS:
+Adrenaline Rush
+The soldier has a 50% chance of getting an adrenaline rush when taking damage, granting an extra action point on player's next turn.
+
+
+Introducing two new weapons
+
+The Carbine
+"The Carbine is a shorter and lighter variant of the Assault Rifle. Its damage equals the rifle version but its accuracy at longer ranges is reduced. Accuracy at medium and short ranges is higher than with the Assault Rifle."
+- All three variants (conventional, magnetic and beam) are provided.
+- Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+
+The accuracy profile, compared to the standard Assault Rifle.
+[profile]
+
+
+
+The Marksman Rifle
+"The Marksman Rifle is a hybrid between the Sniper Rifle and the Assault Rifle. Its damage equals the Assault Rifle but it has a higher base chance to cause critical hits. A penalty is applied to accuracy if the soldier moves before firing. For specialized Marksmen, grants Squadsight and the movement penalty is removed.""
+- All three variants (conventional, magnetic and beam) are provided.
+- Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+- For soldiers without the Marksman skill, an accuracy penalty is applied if the soldier has moved before firing.
+
+The accuracy profile, compared to the standard Assault Rifle.
+[profile]
+
+
+Technical Information
+
+No classes have been overridden, should be compatible with other mods by default.
