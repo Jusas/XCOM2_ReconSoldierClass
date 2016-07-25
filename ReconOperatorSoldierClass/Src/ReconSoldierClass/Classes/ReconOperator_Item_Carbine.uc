@@ -292,10 +292,10 @@ static function X2DataTemplate AddCarbineBM()
 	// This all the resources; sounds, animations, models, physics, the works.
 	Template.GameArchetype = "WP_AssaultRifle_BM.WP_AssaultRifle_BM";
 	Template.UIArmoryCameraPointTag = 'UIPawnLocation_WeaponUpgrade_AssaultRifle';
-	Template.AddDefaultAttachment('Mag', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_MagA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconMagCarbine.ReconMagCarbine_MagA");
-	Template.AddDefaultAttachment('Suppressor', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_SuppressorA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconMagCarbine.ReconMagCarbine_SupressorA");
-	Template.AddDefaultAttachment('Core', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_CoreA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconMagCarbine.ReconMagCarbine_CoreA");
-	Template.AddDefaultAttachment('HeatSink', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_HeatSinkA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconMagCarbine.ReconMagCarbine_HeatsinkA");
+	Template.AddDefaultAttachment('Mag', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_MagA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconBeamCarbine.ReconBeamCarbine_MagA");
+	Template.AddDefaultAttachment('Suppressor', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_SuppressorA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconBeamCarbine.ReconBeamCarbine_SupressorA");
+	Template.AddDefaultAttachment('Core', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_CoreA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconBeamCarbine.ReconBeamCarbine_CoreA");
+	Template.AddDefaultAttachment('HeatSink', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_HeatSinkA", , "img:///UILibrary_ReconOperatorWeapons.UI_ReconBeamCarbine.ReconBeamCarbine_HeatsinkA");
 	Template.AddDefaultAttachment('Light', "BeamAttachments.Meshes.BeamFlashLight");
 
 
@@ -473,8 +473,8 @@ static function AddFreeKillUpgrade(X2ItemTemplateManager ItemTemplateManager, Na
 	// NEW FreeKill UPGRADE CONFIGURATION
 	//Parameters are : 	AttachSocket, UIArmoryCameraPointTag, MeshName, ProjectileName, MatchWeaponTemplate, AttachToPawn, IconName, InventoryIconName, InventoryCategoryIcon, ValidateAttachmentFn
 	Template.AddUpgradeAttachment('Suppressor', 'UIPawnLocation_WeaponUpgrade_AssaultRifle_Suppressor', "ConvAssaultRifle.Meshes.SM_ConvAssaultRifle_SuppressorB", "", 'ReconCarbine_CV', , "img:///UILibrary_ReconOperatorWeapons.ConvReconCarbine.ConvReconCarbine_SuppressorB", "img:///UILibrary_StrategyImages.X2InventoryIcons.ConvAssault_SuppressorB_inv", "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_weaponIcon_barrel");
-	Template.AddUpgradeAttachment('Suppressor', 'UIPawnLocation_WeaponUpgrade_AssaultRifle_Suppressor', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_SuppressorB", "", 'ReconCarbine_MG', , "img:///UILibrary_ReconOperatorWeapons.UI_ReconMagCarbine.ReconMagCarbine_SuppressorB", "img:///UILibrary_StrategyImages.X2InventoryIcons.MagShotgun_SuppressorB_inv", "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_weaponIcon_barrel");
-	Template.AddUpgradeAttachment('Suppressor', 'UIPawnLocation_WeaponUpgrade_AssaultRifle_Suppressor', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_SuppressorB", "", 'ReconCarbine_BM', , "img:///UILibrary_ReconOperatorWeapons.UI_ReconBeamCarbine.ReconBeamCarbine_SuppressorB", "img:///UILibrary_StrategyImages.X2InventoryIcons.BeamAssaultRifle_SupressorB_inv", "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_weaponIcon_barrel");  
+	Template.AddUpgradeAttachment('Suppressor', 'UIPawnLocation_WeaponUpgrade_AssaultRifle_Suppressor', "MagAssaultRifle.Meshes.SM_MagAssaultRifle_SuppressorB", "", 'ReconCarbine_MG', , "img:///UILibrary_ReconOperatorWeapons.UI_ReconMagCarbine.ReconMagCarbine_SupressorB", "img:///UILibrary_StrategyImages.X2InventoryIcons.MagShotgun_SuppressorB_inv", "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_weaponIcon_barrel");
+	Template.AddUpgradeAttachment('Suppressor', 'UIPawnLocation_WeaponUpgrade_AssaultRifle_Suppressor', "BeamAssaultRifle.Meshes.SM_BeamAssaultRifle_SuppressorB", "", 'ReconCarbine_BM', , "img:///UILibrary_ReconOperatorWeapons.UI_ReconBeamCarbine.ReconBeamCarbine_SupressorB", "img:///UILibrary_StrategyImages.X2InventoryIcons.BeamAssaultRifle_SupressorB_inv", "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_weaponIcon_barrel");  
 } 
 
 
