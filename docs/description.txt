@@ -75,7 +75,7 @@ Survivor
 Grants the operator improvised armor plating, adding 1 point of armor. Also grants the operator the ability to administer emergency first aid to self heal, healing 4hp. The first aid also removes fire, acid and poison effects. Can be used once per mission.
 
 Fighting Spirit
-Grants +1 extra weapon damage per two enemies in sight. Passive skill.
+Grants a base crit chance of 10% and +1 extra weapon damage per two enemies in sight, doubled on critical hits. Passive skill.
 
 
 You can also unlock an additional ability from the GTS:
@@ -108,3 +108,14 @@ The accuracy profile, compared to the standard Assault Rifle.
 Technical Information
 
 No classes have been overridden, should be compatible with other mods by default.
+
+
+- Evasive
+- Rapid Deployment
+- Infighter
+- Lone Wolf
+- Full Kit
+- Resilience
+ 
+- Tactical Sense / Clutch Shot / Emergency Life Support
+

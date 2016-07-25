@@ -27,6 +27,7 @@ var config bool RECON_SPECULATIVEFIRE_CROSSCLASS_ELIGIBLE; // Is the ability cro
 var config bool RECON_SHOOTER_CROSSCLASS_ELIGIBLE; // Is the ability cross class eligible
 var config int RECON_BRINGEMON_BONUS_DAMAGE;
 var config int RECON_BRINGEMON_ENEMIES_PER_BONUS_STEP;
+var config int RECON_BRINGEMON_BASECRIT;
 var config bool RECON_BRINGEMON_CROSSCLASS_ELIGIBLE;
 var config bool RECON_SURVIVOR_CROSSCLASS_ELIGIBLE;
 var config int RECON_SURVIVOR_AIDKIT_HEAL_AMOUNT;
@@ -1095,6 +1096,7 @@ static function X2AbilityTemplate AddBringEmOnAbility()
 {
 	local X2AbilityTemplate                 Template;
 	local ReconOperator_BringEmOn_Effect	Effect;
+	local X2Effect_ToHitModifier			CritEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE( Template, 'ReconBringEmOn' );
 
@@ -1116,6 +1118,14 @@ static function X2AbilityTemplate AddBringEmOnAbility()
 	Effect.BuildPersistentEffect(1, true, false);
 	Effect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,,Template.AbilitySourceName);
 	Template.AddTargetEffect(Effect);		
+
+	CritEffect = new class'X2Effect_ToHitModifier';
+	CritEffect.EffectName = 'ReconBringEmOnCrit';
+	CritEffect.DuplicateResponse = eDupe_Ignore;
+	CritEffect.BuildPersistentEffect(1, true, false);
+	CritEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,false,,Template.AbilitySourceName);
+	CritEffect.AddEffectHitModifier(eHit_Crit, default.RECON_BRINGEMON_BASECRIT, Template.LocFriendlyName);
+	Template.AddTargetEffect(CritEffect);
 
 	Template.bCrossClassEligible = default.RECON_BRINGEMON_CROSSCLASS_ELIGIBLE;
 

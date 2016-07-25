@@ -2,14 +2,38 @@ class X2DownloadableContentInfo_ReconSoldierClass extends X2DownloadableContentI
 
 var array<name> ReconWeaponTemplateNames;
 
+static event OnPostTemplatesCreated()
+{
+	local X2AbilityTemplateManager AbilityTemplateMgr;
+	local X2AbilityTemplate LWTemplate;
+
+	`Log("[ReconOperator]-> OnPostTemplatesCreated");
+	AbilityTemplateMgr = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+	LWTemplate = AbilityTemplateMgr.FindAbilityTemplate('Suppression_LW');
+	if(LWTemplate != none)
+	{
+		`Log("[ReconOperator]-> LW PerkPack seems to be installed");
+	}
+	else 
+	{
+		`Log("[ReconOperator]-> LW PerkPack does NOT seem to be installed");
+	}
+	
+}
+
 static event OnLoadedSavedGameToStrategy()
 {
 	local XComGameState NewGameState;
 	local XComGameStateHistory History;
 	local XComGameState_HeadquartersXCom XComHQ;
+	local X2ItemTemplate LWItemTemplate;
 	local array<name> WeaponNames;
 	local name WeaponName;
 	local bool UpdatedWeapons;
+
+	local X2AbilityTemplateManager AbilityTemplateMgr;
+	local X2AbilityTemplate LWTemplate;
+
 
 	UpdatedWeapons = false;
 
@@ -39,6 +63,20 @@ static event OnLoadedSavedGameToStrategy()
 	else
 	{
 		History.CleanupPendingGameState(NewGameState);
+	}
+
+	// Check if LWPerkPack is installed. If true, add additional skills to the recon soldier class template.
+	// Not exactly a foolproof check, just trying to see if one of the LW ability templates can be found.
+
+	AbilityTemplateMgr = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+	LWTemplate = AbilityTemplateMgr.FindAbilityTemplate('Suppression_LW');
+	if(LWTemplate != none)
+	{
+		`Log("[ReconOperator]-> LW PerkPack seems to be installed");
+	}
+	else 
+	{
+		`Log("[ReconOperator]-> LW PerkPack does NOT seem to be installed");
 	}
 	
 	`Log("[ReconOperator]-> OnLoadedSavedGame complete");
