@@ -76,6 +76,9 @@
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_MarkedEffect.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_MarksmanSquadsightPenalty_Effect.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ReconSoldierClass\Classes\ReconOperator_ReturnFireEffect.uc">
       <SubType>Content</SubType>
     </Content>

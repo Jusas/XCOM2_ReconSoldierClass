@@ -63,6 +63,7 @@ static function X2AbilityTemplate AddMarksmanRifleBonusAbility()
 	local X2AbilityTemplate Template;
 	local X2Effect_Squadsight SquadsightEffect;
 	local X2Condition_AbilityProperty HasAbilityCondition;
+	local ReconOperator_MarksmanSquadsightPenalty_Effect SquadsightPenalty;
 
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconMarksmanRifleBonus');
@@ -91,6 +92,11 @@ static function X2AbilityTemplate AddMarksmanRifleBonusAbility()
 	SquadsightEffect.BuildPersistentEffect(1, true, true, true);
 	SquadsightEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
 	Template.AddTargetEffect(SquadsightEffect);
+
+	SquadsightPenalty = new class'ReconOperator_MarksmanSquadsightPenalty_Effect';
+	SquadsightPenalty.BuildPersistentEffect(1, true, true, true);	
+	SquadsightPenalty.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,false,,Template.AbilitySourceName);
+	Template.AddTargetEffect(SquadsightPenalty);
 
 	// Squadsight condition: the weapon gives the soldier squadsight if it has the 'ReconMarksmanSpecializationAbility'.
 	HasAbilityCondition = new class'X2Condition_AbilityProperty';

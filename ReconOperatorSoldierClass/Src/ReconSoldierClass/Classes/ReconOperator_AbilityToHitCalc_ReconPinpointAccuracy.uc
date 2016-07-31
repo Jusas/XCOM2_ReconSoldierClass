@@ -25,24 +25,41 @@ function int GetEnemyCoverValue()
 		{
 			if(ModifierInfo.Reason == class'XLocalizedData'.default.AngleToTargetCover)
 			{
-				AngleReduction = ModifierInfo.Value;
+				AngleReduction = Abs(ModifierInfo.Value);
 			}
 			if(ModifierInfo.Reason == class'XLocalizedData'.default.TargetLowCover)
 			{
-				CoverValue = ModifierInfo.Value;
+				CoverValue = Abs(ModifierInfo.Value);
 			}
 			if(ModifierInfo.Reason == class'XLocalizedData'.default.TargetHighCover)
 			{
-				CoverValue = ModifierInfo.Value;
+				CoverValue = Abs(ModifierInfo.Value);
 			}
 		}
 	}
 
 	`log("[ReconOperator]-> GetEnemyCoverValue: Cover value is " $ CoverValue $ ", AngleReduction is " $ AngleReduction);
-	return (-CoverValue) - AngleReduction;
+	return CoverValue - AngleReduction;
 }
 
 
+
+protected function FinalizeHitChance()
+{
+	local int CoverValue;
+
+	CoverValue = GetEnemyCoverValue();
+	if(CoverValue > 0)
+	{		
+		`log("[ReconOperator]-> FinalizeHitChance: Cover value is " $ CoverValue $ ", Reduction bonus is " $ RECON_PINPOINTSHOT_COVER_REDUCTION_BONUS);
+		//`log("[ReconOperator]-> FinalizeHitChance: PinpointAccuracyFriendlyName is " $ PinpointAccuracyFriendlyName);
+		AddModifier(CoverValue * RECON_PINPOINTSHOT_COVER_REDUCTION_BONUS, PinpointAccuracyFriendlyName);
+	}
+
+	super.FinalizeHitChance();
+}
+
+/*
 protected function int GetHitChance(XComGameState_Ability kAbility, AvailableTarget kTarget, optional bool bDebugLog=false)
 {
 	local int CoverValue;
@@ -62,3 +79,4 @@ protected function int GetHitChance(XComGameState_Ability kAbility, AvailableTar
 
 	return m_ShotBreakdown.FinalHitChance;
 }
+*/

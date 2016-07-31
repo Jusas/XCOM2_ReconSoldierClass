@@ -28,7 +28,7 @@ static function X2SoldierAbilityUnlockTemplate AdrenalineUnlock()
 
 	// Cost
 	Resources.ItemTemplateName = 'Supplies';
-	Resources.Quantity = 100;
+	Resources.Quantity = 75;
 	Template.Cost.ResourceCosts.AddItem(Resources);
 	
 	return Template;

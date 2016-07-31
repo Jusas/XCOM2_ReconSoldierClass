@@ -1,121 +1,268 @@
 
-Recon Class for XCOM 2
+[h1]Recon Class for XCOM 2[/h1]
 
 
 Introducing a new soldier class to XCOM 2: The Recon Class!
 
-The inspiration behind this class was to provide an option, or a supplement if you like, to the straight up "boxed" classes like the Ranger and the Sharpshooter. With the Recon class you can choose between two supplementing training paths: Recon Sniper and Force Recon - or of course, create a funky mixture if you like. Both paths share the three basic abilities: Phantom (remains concealed when others get revealed), Light Feet (+3 to mobility) and Fire Pistol. This implies the classes are meant to quite heavily utilize mobility and stealth.
+The inspiration behind this class was to provide an option, or a supplement if you like, to the "one job" classes like the Ranger and the Sharpshooter. With the Recon class you can choose between two supplementing training paths: Recon Sniper and Force Recon - or of course, create a funky mixture if you like. Both paths share the three basic abilities: Phantom (remains concealed when others get revealed), Light Feet (+3 to mobility) and Fire Pistol. This implies the classes are meant to quite heavily utilize mobility and stealth.
 
 The class can equip Rifles, Shotguns, Carbines and Marksman Rifles. The Carbine and the Marksman Rifle are new weapons and come with this mod, and both belong to the Rifle category. More on the new weapons further below.
 
+Also, the [u]Long War Perk Pack is supported![/u] Supplementing skills from the perk pack are available as a third ability tree branch and Brigadier skills are also provided.
+[b]NOTE: This mod does NOT require the Long War Perk Pack installed, what it does is it utilizes the extra skills provided when the Perk Pack is available.[/b]
+I know some people don't like the big overhaul they've made so I wanted to make sure this works for both crowds.
 
-Recon Sniper
 
-The Recon Sniper is the more supporting role of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 5% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot incurs an accuracy penalty.
+[h1]Ability Branches[/h1]
+
+[b]Recon Sniper[/b]
+
+The Recon Sniper is the more supporting class of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 5% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot increases the accuracy penalty.
+
 The Recon Sniper is not a pure sniper even though its name might imply that. The subclass relies on the Marksman Rifle, a longer range version of the Assault Rifle, which provides Squadsight to the soldier. The Marksman Rifle is at its best at medium and just beyond medium ranges but incurs accuracy penalties at extreme ranges, and lacks the punch of the higher caliber sniper rifles. It's quite possible and sensible to use the standard Assault Rifle with the Recon Sniper, although in that case you probably want to go for the Force Recon tree ability instead of the Marksman.
 
 
-Force Recon
+[b]Force Recon[b]
 
-The Force Recon subclass is the aggressive counterpart of the Recon Sniper. Whereas the sniper would stay at a good distance, the Force Recon is always in the thick of it. Similar to the Ranger, the ability tree emphasizes close quarters combat and being in the thick of it - this is literally your point man. Its main distinctive perk is the Shooter ability, allowing the soldier to move after taking a standard shot. The Situational Awareness ability evens the field when the Force Recon encounters an enemy: if the soldier alerts an alien pod to its presence, the soldier gets a quick reaction shot at one of the scampering enemies. And while the Recon Sniper would hold back and take a Concealed Shot, the Force Recon can try to flush out the enemy using Speculative Fire, firing at suspected enemy positions. If the soldier is packing AP ammo it can even fire through walls in an effort to get the aliens' attention. When the action really gets tough, the soldier can decide to stay in cover and use the Return Fire ability, enabling the soldier to respond up to 3 attacks by attempting to return fire and causing the soldier to hunker down if hit. The Survivor ability grants the soldier +1 armor point and a first aid kit that can heal the soldier +4 HP once per mission. To even further encourage staying it the thick of it, the Colonel level ability Fighting Spirit adds a +1 damage bonus per 2 aliens in sight.
-The Carbine was specifically created for this class, as the soldier spends most of its time at close to medium ranges. It provides good accuracy at short to medium ranges but suffers from accuracy penalties at longer ranges. The soldier performs quite well with the standard Assault Rifle and the Shotgun as well, so the choice is yours.
+The Force Recon subclass is the aggressive counterpart of the Recon Sniper. Whereas the sniper would stay at a good distance, the Force Recon is always in the thick of it. Similar to the Ranger, the ability tree emphasizes close quarters combat and being in the thick of it - this is literally your point man. Its main distinctive perk is the Shooter ability, allowing the soldier to move after taking a standard shot. The Situational Awareness ability evens the field when the Force Recon encounters an enemy: if the soldier alerts an alien pod to its presence, the soldier gets an immediate free reaction shot at one of the scampering enemies. And while the Recon Sniper would hold back and take a Concealed Shot, the Force Recon can try to flush out the enemy using Speculative Fire, firing at suspected enemy positions. If the soldier is packing AP ammo it can even fire through walls in an effort to get the aliens' attention. When the action really gets tough, the soldier can decide to stay in cover and use the Return Fire ability, enabling the soldier to respond up to 3 attacks by attempting to return fire and causing the soldier to hunker down if hit. The Survivor ability grants the soldier +1 armor point and a first aid kit that can heal the soldier +4 HP once per mission. To even further encourage staying it the thick of it, the Colonel level ability Fighting Spirit adds a +1 damage bonus per 2 aliens in sight and a 10% base critical hit chance.
+
+The new Carbine weapon was specifically created for this class, as the soldier spends most of its time at close to medium ranges. It provides good accuracy at short to medium ranges but suffers from accuracy penalties at longer ranges. The soldier performs quite well with the standard Assault Rifle and the Shotgun as well, so the choice is yours.
 
 
-The Abilty Tree
+[h1]The Abilty Tree[/h1]
 
-Squaddie
+[b]Squaddie[/b]
 
-Light Feet
+[u]Light Feet[/u]
 Gains +3 mobility and a 20% smaller detection radius.
 
-Phantom
+[u]Phantom[/u]
 Soldier stays concealed when the rest of the squad is revealed.
 
-Fire Pistol
+[u]Fire Pistol[/u]
 Ability to equip and fire the pistol standard shot and overwatch.
 
 
 
-Recon Sniper
+[b]Recon Sniper[/b]
 
-Marksman
+[u]Marksman[/u]
 Removes the moving penalty from the Marksman Rifle and enables Squadsight for the Marksman Rifle.
 
-Reconnoiter
+[u]Reconnoiter[/u]
 All enemies in a small cone get reconnoitered for an accuracy and critical hit chance bonus for the whole squad, does not reveal the operator. 3 turn cooldown.
 
-Concealed Shot
+[u]Concealed Shot[/u]
 Allows firing a shot without revealing the operator. 3 turn cooldown.
 
-Double Shot
+[u]Double Shot[/u]
 Fires two shots at the same target, with the second shot incurring a 15% accuracy penalty. 4 turn cooldown.
 
-Pinpoint Accuracy
+[u]Pinpoint Accuracy[/u]
 Allows firing a shot that ignores 50% of the high/low cover defense bonus. 4 turn cooldown.
 
-Extreme Prejudice
+[u]Extreme Prejudice[/u]
 Enhanced overwatch. The operator applies all its skill to fire as many rounds to its targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip. Each consecutive shot incurs a 5% accuracy penalty. Can be activated from Concealment (breaks concealment when firing). Marksman Rifle squadsight applies. 5 turn cooldown.
 
 
-Force Recon
+[b]Force Recon[/b]
 
-Shooter
-Taking a Standard Shot no longer ends the turn.
+[u]Rifleman[/u]
+Taking a Standard Shot as first action no longer ends the turn.
 
-Situational Awareness
-If an enemy spawn is triggered by this operator's movement, a free immediate reaction fire is granted with the primary weapon, once per turn. Passive skill.
+[u]Situational Awareness[/u]
+If an enemy spawn is triggered by this operator, a free immediate reaction fire is granted with the primary weapon, once per turn. Passive skill.
 
-Speculative Fire
-Fire at suspected enemy positions to trigger an enemy spawn. Can fire through obstacles if Armor Piercing Ammo is equipped. 4 turn cooldown.
+[u]Speculative Fire[/u]
+Fire at suspected enemy positions to trigger an enemy spawn. Can fire through obstacles if AP Ammo is equipped. 4 turn cooldown.
 
-Return Fire
+[u]Return Fire[/u]
 Grants the operator the ability to return fire against up to 3 attacks on the enemy's next turn. If the operator gets hit while the ability is active the operator automatically hunkers down for more cover. Free activation. 3 turn cooldown.
 
-Survivor
+[u]Survivor[/u]
 Grants the operator improvised armor plating, adding 1 point of armor. Also grants the operator the ability to administer emergency first aid to self heal, healing 4hp. The first aid also removes fire, acid and poison effects. Can be used once per mission.
 
-Fighting Spirit
+[u]Fighting Spirit[/u]
 Grants a base crit chance of 10% and +1 extra weapon damage per two enemies in sight, doubled on critical hits. Passive skill.
 
 
-You can also unlock an additional ability from the GTS:
-Adrenaline Rush
+[b]Long War Bonus Perk Branch[/b]
+
+These Perk Pack skills are available as the third branch if you have the Perk Pack installed.
+
+[u]Evasive[/u]
+Start each mission with 100 bonus dodge. The bonus is removed after you take damage for the first time.
+
+[u]Rapid Deployment[/u]
+Activate this ability before throwing or launching a support grenade, and the throw will not cost an action.
+
+[u]Infighter[/u]
+Gain 25 dodge against attacks within four tiles.
+
+[u]Lone Wolf[/u]
+Gain +10 aim and +10 defense when 7 or more tiles distant from any ally.
+
+[u]Full Kit[/u]
+Grants +1 charge per grenade item in a utility slot.
+
+[u]Resilience[/u]
+Enemy attacks against you suffer a -50 penalty to critical hit chances.
+
+
+[b]Long War Brigadier Skill Options[/b]
+
+[u]Tactical Sense[/u] 
+Gain 5 defense for each enemy you can see, up to a maximum of 20 defense.
+
+[u]Clutch Shot[/u]
+Once per mission, fire a pistol shot that cannot miss.
+
+[u]Emergency Life Support[/u]
+Emergency Life Support ensures the first killing blow in a mission will not lead to instant death. It also extends the time before the soldier bleeds out and dies.
+
+
+
+You can also unlock one additional ability from the GTS:
+
+[u]Adrenaline Rush[/u]
 The soldier has a 50% chance of getting an adrenaline rush when taking damage, granting an extra action point on player's next turn.
 
 
-Introducing two new weapons
 
-The Carbine
+[h1]Introducing Two New Weapons[/h1]
+
+[b]The Carbine[/b]
+
 "The Carbine is a shorter and lighter variant of the Assault Rifle. Its damage equals the rifle version but its accuracy at longer ranges is reduced. Accuracy at medium and short ranges is higher than with the Assault Rifle."
-- All three variants (conventional, magnetic and beam) are provided.
-- Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+[list]
+[*] All three variants (conventional, magnetic and beam) are provided. [i]NOTE: No LW Laser Pack variant is provided for the time being.[/i]
+[*] Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+[/list]
 
 The accuracy profile, compared to the standard Assault Rifle.
-[profile]
+[url=]Click here to see the graph[/url]
 
 
+[b]The Marksman Rifle[/b]
 
-The Marksman Rifle
-"The Marksman Rifle is a hybrid between the Sniper Rifle and the Assault Rifle. Its damage equals the Assault Rifle but it has a higher base chance to cause critical hits. A penalty is applied to accuracy if the soldier moves before firing. For specialized Marksmen, grants Squadsight and the movement penalty is removed.""
-- All three variants (conventional, magnetic and beam) are provided.
-- Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
-- For soldiers without the Marksman skill, an accuracy penalty is applied if the soldier has moved before firing.
+"The Marksman Rifle is a hybrid between the Sniper Rifle and the Assault Rifle. Its damage equals the Assault Rifle but it has a higher base chance to cause critical hits. A penalty is applied to accuracy if the soldier moves before firing. For specialized Marksmen, grants Squadsight and the movement penalty is removed."
+[list]
+[*] All three variants (conventional, magnetic and beam) are provided. [i]NOTE: No LW Laser Pack variant is provided for the time being.[/i]
+[*] Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+[*] For soldiers without the Marksman skill, an accuracy penalty is applied if the soldier has moved on the same turn.
+[/list]
 
 The accuracy profile, compared to the standard Assault Rifle.
-[profile]
+[url=]Click here to see the graph[/url]
 
 
-Technical Information
+[h1]Technical Information[/h1]
 
-No classes have been overridden, should be compatible with other mods by default.
+[list]
+[*] No classes have been overridden, should be compatible with other mods by default.
+[*] Long War Perk Pack compatible.
+[*] If enabled mid-campaign, the new weapons should appear in your inventory, provided that their research has been completed and the upgrade bought.
+[/list]
 
 
-- Evasive
-- Rapid Deployment
-- Infighter
-- Lone Wolf
-- Full Kit
-- Resilience
- 
-- Tactical Sense / Clutch Shot / Emergency Life Support
 
+[h1]Known issues / perhaps unexpected funny things[/h1]
+
+[list]
+[*] The Return Fire ability returns fire after receiving a hit, and then hunkers down. This is because the response is attached to the attack event and the hunker down is attached to the take damage event, and that is simply the order of the events.
+[*] The Situational Awareness skill will trigger if the enemy wanders to your soldier - this is intended. It does not matter if it's the player's turn or the enemy's turn, if the soldier with the skill is the one that triggers the pod, the immediate reaction fire is granted.
+[*] Speculative Fire aiming can be a bit tricky, as you can fire behind what you can see but the targeting sphere gets painted over by the fog of war.
+[/list]
+
+
+[h1]Source Code[/h1]
+
+As always, my mods are open source. I've tried to comment them to be of some use to others. Feel free to copy and use the code in your own mods, the liberal MIT license applies.
+The code can be found here: https://github.com/Jusas/XCOM2_ReconSoldierClass
+
+----------------------------------------------------------------------------------
+
+SHORTER
+
+----------------------------------------------------------------------------------
+[h1]Recon Class for XCOM 2[/h1]
+
+Introducing a new soldier class to XCOM 2: [b]The Recon Class![/b]
+
+The inspiration behind this class was to provide an option, or a supplement if you like, to the "one job" classes like the Ranger and the Sharpshooter. With the Recon class you can choose between two supplementing training paths: [b]Recon Sniper[/b] and [b]Force Recon[/b] - or of course, create a funky mixture if you like. Both paths share the three basic abilities: Phantom (remains concealed when others get revealed), Light Feet (+3 to mobility) and Fire Pistol. This implies the classes are meant to quite heavily utilize mobility and stealth.
+
+The class can equip [b]Rifles, Shotguns, Carbines and Marksman Rifles[/b]. The [b]Carbine[/b] and the [b]Marksman Rifle[/b] are new weapons and come with this mod, and both belong to the Rifle category. More on the new weapons further below.
+
+Also, the [b]Long War Perk Pack is supported![/b] Supplementing skills from the perk pack are available as a third ability tree branch and Brigadier skills are also provided.
+
+[b]NOTE: This mod does NOT require the Long War Perk Pack installed, what it does is it utilizes the extra skills provided when the Perk Pack is available.[/b]
+
+I know some people don't like the big overhaul they've made so I wanted to make sure this works for both crowds.
+
+
+[h1]Ability Branches[/h1]
+
+[b]Recon Sniper[/b]
+
+The Recon Sniper is the more supporting class of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 5% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot increases the accuracy penalty.
+
+The Recon Sniper is not a pure sniper even though its name might imply that. The subclass relies on the Marksman Rifle, a longer range version of the Assault Rifle, which provides Squadsight to the soldier. The Marksman Rifle is at its best at medium and just beyond medium ranges but incurs accuracy penalties at extreme ranges, and lacks the punch of the higher caliber sniper rifles. It's quite possible and sensible to use the standard Assault Rifle with the Recon Sniper, although in that case you probably want to go for the Force Recon tree ability instead of the Marksman.
+
+
+[b]Force Recon[/b]
+
+The Force Recon subclass is the aggressive counterpart of the Recon Sniper. Whereas the sniper would stay at a good distance, the Force Recon is always in the thick of it. Similar to the Ranger, the ability tree emphasizes close quarters combat and being in the thick of it - this is literally your point man. Its main distinctive perk is the Rifleman ability, allowing the soldier to move after taking a standard shot. The Situational Awareness ability evens the field when the Force Recon encounters an enemy: if the soldier alerts an alien pod to its presence, the soldier gets an immediate free reaction shot at one of the scampering enemies. And while the Recon Sniper would hold back and take a Concealed Shot, the Force Recon can try to flush out the enemy using Speculative Fire, firing at suspected enemy positions. If the soldier is packing AP ammo it can even fire through walls in an effort to get the aliens' attention. When the action really gets tough, the soldier can decide to stay in cover and use the Return Fire ability, enabling the soldier to respond up to 3 attacks by attempting to return fire and causing the soldier to hunker down if hit. The Survivor ability grants the soldier +1 armor point and a first aid kit that can heal the soldier +4 HP once per mission. To even further encourage staying it the thick of it, the Colonel level ability Fighting Spirit adds a +1 damage bonus per 2 aliens in sight and a 10% base critical hit chance.
+
+The new Carbine weapon was specifically created for this class, as the soldier spends most of its time at close to medium ranges. It provides good accuracy at short to medium ranges but suffers from accuracy penalties at longer ranges. The soldier performs quite well with the standard Assault Rifle and the Shotgun as well, so the choice is yours.
+
+
+[h1]The Abilty Tree[/h1]
+
+[b][url=http://steamcommunity.com/workshop/filedetails/discussion/731437305/359543951730337277/]View the full skill tree with descriptions here[/url][/b]
+(The mod description max length is too short for full description)
+
+
+[h1]Introducing Two New Weapons[/h1]
+
+[b]The Carbine[/b]
+
+"The Carbine is a shorter and lighter variant of the Assault Rifle. Its damage equals the rifle version but its accuracy at longer ranges is reduced. Accuracy at medium and short ranges is higher than with the Assault Rifle."
+[list]
+[*] All three variants (conventional, magnetic and beam) are provided. [i]NOTE: No LW Laser Pack variant is provided for the time being.[/i]
+[*] Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+[/list]
+
+[b]The accuracy profile, compared to the standard Assault Rifle.
+[url=http://i.imgur.com/SPnwiJv.png]Click here to see the graph[/url][/b]
+
+
+[b]The Marksman Rifle[/b]
+
+"The Marksman Rifle is a hybrid between the Sniper Rifle and the Assault Rifle. Its damage equals the Assault Rifle but it has a higher base chance to cause critical hits. A penalty is applied to accuracy if the soldier moves before firing. For specialized Marksmen, grants Squadsight and the movement penalty is removed."
+[list]
+[*] All three variants (conventional, magnetic and beam) are provided. [i]NOTE: No LW Laser Pack variant is provided for the time being.[/i]
+[*] Belongs to the standard Rifle category and gets upgraded at the same time as the standard Assault Rifle.
+[*] For soldiers without the Marksman skill, an accuracy penalty is applied if the soldier has moved on the same turn.
+[/list]
+
+[b]The accuracy profile, compared to the standard Assault Rifle.
+[url=http://i.imgur.com/6Ps0QNj.png]Click here to see the graph[/url][/b]
+
+
+[h1]Technical Information[/h1]
+
+[list]
+[*] No classes have been overridden (very compatible).
+[*] Long War Perk Pack compatible.
+[*] Shen's Last Gift DLC compatible.
+[*] If enabled mid-campaign, the new weapons should appear in your inventory, provided that their research has been completed and the upgrade bought.
+[/list]
+
+
+[h1]Known issues / perhaps unexpected funny things[/h1]
+
+[list]
+[*] The Return Fire ability still returns fire after receiving a hit, and then hunkers down. This is because the response is attached to the attack event and the hunker down is attached to the take damage event, and that is simply the order of the events.
+[*] The Situational Awareness skill will also trigger if the enemy wanders to your soldier and gets revealed - this is intended.
+[*] Speculative Fire aiming can be a bit tricky, as you can fire behind what you can see but the targeting sphere gets painted over by the fog of war.
+[/list]

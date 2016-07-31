@@ -36,8 +36,6 @@ var config bool RECON_RETURNFIRE_CROSSCLASS_ELIGIBLE;
 var config int RECON_RETURNFIRE_COOLDOWN;
 var config int RECON_EXTREME_PREJUDICE_COOLDOWN;
 var config bool RECON_EXTREME_PREJUDICE_CROSSCLASS_ELIGIBLE;
-var config int RECON_EXTREME_PREJUDICE_TILE_WIDTH;
-var config int RECON_EXTREME_PREJUDICE_TILE_LENGTH;
 var config int RECON_EXTREME_PREJUDICE_ACC_PENALTY;
 var config int RECON_ADRENALINE_CHANCE;
 
@@ -304,6 +302,7 @@ static function X2AbilityTemplate AddSituationalAwarenessReaction()
 	local X2Condition_UnitEffectsWithAbilitySource SATargetCondition;
 	local X2Effect_Knockback				KnockBackEffect;
 	local X2AbilityTarget_Single			SingleTarget;
+	local ReconOperator_ShooterConcealedCondition NotConcealedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ReconSituationalAwarenessReaction');
 
@@ -316,6 +315,11 @@ static function X2AbilityTemplate AddSituationalAwarenessReaction()
 	StandardAim.bAllowCrit = true;
 	Template.AbilityToHitCalc = StandardAim;
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+
+	// The shooter must not be concealed.
+	NotConcealedCondition = new class'ReconOperator_ShooterConcealedCondition';
+	NotConcealedCondition.MustBeConcealed = false;
+	Template.AbilityShooterConditions.AddItem(NotConcealedCondition);
 	
 	// Single target in weapons range.
 	SingleTarget = new class'X2AbilityTarget_Single';
@@ -1064,7 +1068,6 @@ static function X2AbilityTemplate AddSpeculativeFireAbility()
 
 	Template.DamagePreviewFn = DoubleShotDamagePreview;
 	Template.bCrossClassEligible = default.RECON_SPECULATIVEFIRE_CROSSCLASS_ELIGIBLE;
-
 
 	return Template;
 }

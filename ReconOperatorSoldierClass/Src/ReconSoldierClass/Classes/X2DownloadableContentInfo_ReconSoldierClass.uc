@@ -4,20 +4,6 @@ var array<name> ReconWeaponTemplateNames;
 
 static event OnPostTemplatesCreated()
 {
-	local X2AbilityTemplateManager AbilityTemplateMgr;
-	local X2AbilityTemplate LWTemplate;
-
-	`Log("[ReconOperator]-> OnPostTemplatesCreated");
-	AbilityTemplateMgr = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
-	LWTemplate = AbilityTemplateMgr.FindAbilityTemplate('Suppression_LW');
-	if(LWTemplate != none)
-	{
-		`Log("[ReconOperator]-> LW PerkPack seems to be installed");
-	}
-	else 
-	{
-		`Log("[ReconOperator]-> LW PerkPack does NOT seem to be installed");
-	}
 	
 }
 
@@ -27,15 +13,10 @@ static event OnLoadedSavedGameToStrategy()
 	local XComGameStateHistory History;
 	local XComGameState_HeadquartersXCom OldXComHQ;
 	local XComGameState_HeadquartersXCom XComHQ;
-	local X2ItemTemplate LWItemTemplate;
 	local array<name> WeaponNames;
 	local name WeaponName;
 	local bool UpdatedWeapons;
 	
-
-	local X2AbilityTemplateManager AbilityTemplateMgr;
-	local X2AbilityTemplate LWTemplate;
-
 
 	UpdatedWeapons = false;
 
@@ -67,23 +48,6 @@ static event OnLoadedSavedGameToStrategy()
 		History.CleanupPendingGameState(NewGameState);
 	}
 
-	// Check if LWPerkPack is installed. If true, add additional skills to the recon soldier class template.
-	// Not exactly a foolproof check, just trying to see if one of the LW ability templates can be found.
-
-
-	AbilityTemplateMgr = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
-	LWTemplate = AbilityTemplateMgr.FindAbilityTemplate('Suppression_LW');
-	if(LWTemplate != none)
-	{
-		`Log("[ReconOperator]-> LW PerkPack seems to be installed");
-	}
-	else 
-	{
-		`Log("[ReconOperator]-> LW PerkPack does NOT seem to be installed");
-	}
-	
-	`Log("[ReconOperator]-> OnLoadedSavedGame complete");
-
 }
 
 static function bool UpdateWeaponToInventory(name WeaponName, XComGameState_HeadquartersXCom OldXComHQ, XComGameState_HeadquartersXCom XComHQ, XComGameState GameState, XComGameStateHistory History)
@@ -95,20 +59,6 @@ static function bool UpdateWeaponToInventory(name WeaponName, XComGameState_Head
 	local X2SchematicTemplate Schematic;
 	local name CreatorSchematicName;
 	local bool DidAddWeaponToInventory;
-
-	local StateObjectReference TechRef;
-	local XComGameState_Tech TechState;
-
-	local array<StateObjectReference> NewResearch;
-	local array<StateObjectReference> NewProvingGroundProjects;
-	local array<X2ItemTemplate> NewItems;
-	local array<X2FacilityTemplate> NewFacilities;
-	local array<X2FacilityUpgradeTemplate> NewUpgrades;
-	local array<StateObjectReference> NewInstantResearch;
-	local X2ItemTemplate TechItemTemplate;
-
-
-
 
 	DidAddWeaponToInventory = false;
 
@@ -147,34 +97,7 @@ static function bool UpdateWeaponToInventory(name WeaponName, XComGameState_Head
 						break;
 					}
 				}
-				/*if(!DidAddWeaponToInventory)
-				{
-					// Well, let's try techs then.
-					foreach OldXComHQ.TechsResearched(TechRef)
-					{
-						TechState = XComGameState_Tech(History.GetGameStateForObjectID(TechRef.ObjectID));						
-						`Log("[ReconOperator]-> Iterating tech " $ TechState.GetMyTemplateName());
-
-						TechState.GetMyTemplate().GetUnlocks(NewResearch, NewProvingGroundProjects, NewItems, NewFacilities, NewUpgrades, NewInstantResearch);
-						foreach NewItems(TechItemTemplate)
-						{
-							`Log("[ReconOperator]-> Iterating tech unlock " $ TechItemTemplate.DataName);
-							TechItemTemplate.
-							if(ItemTemplate.DataName == TechItemTemplate.DataName)
-							{
-								//`Log("[ReconOperator]-> Researched tech " $ TechState.GetMyTemplateName() $ " contains the weapon template " $ WeaponName $ " in its unlock items list");
-								`Log("[ReconOperator]-> Match for " $ WeaponName $ " in unlock items list");
-								NewItemState = ItemTemplate.CreateInstanceFromTemplate(GameState);
-								GameState.AddStateObject(NewItemState);
-								XComHQ.AddItemToHQInventory(NewItemState);
-								DidAddWeaponToInventory = true;				
-								break;
-							}
-						}
-						
-						
-					}*/
-
+				
 				if(!DidAddWeaponToInventory)
 					`Log("[ReconOperator]-> The weapon " $ WeaponName $ " does not have the required schematic " $ CreatorSchematicName $ " in the XCOMHQ inventory, skipping it");
 				

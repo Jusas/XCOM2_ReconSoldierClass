@@ -1,6 +1,6 @@
 class ReconOperator_Item_MarksmanRifle extends X2Item config(GameData_WeaponData); 
 
-var config int RECON_MARKSMAN_MAX_RANGE;
+var config int RECON_MARKSMAN_SQUADSIGHT_PENALTY;
 var config int RECON_MARKSMAN_MOVE_PENALTY;
 
 var config array<int> RECON_MARKSMAN_CONVENTIONAL_RANGE;
