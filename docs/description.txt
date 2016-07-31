@@ -17,7 +17,7 @@ I know some people don't like the big overhaul they've made so I wanted to make 
 
 [b]Recon Sniper[/b]
 
-The Recon Sniper is the more supporting class of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 5% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot increases the accuracy penalty.
+The Recon Sniper is the more supporting class of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 7% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot increases the accuracy penalty.
 
 The Recon Sniper is not a pure sniper even though its name might imply that. The subclass relies on the Marksman Rifle, a longer range version of the Assault Rifle, which provides Squadsight to the soldier. The Marksman Rifle is at its best at medium and just beyond medium ranges but incurs accuracy penalties at extreme ranges, and lacks the punch of the higher caliber sniper rifles. It's quite possible and sensible to use the standard Assault Rifle with the Recon Sniper, although in that case you probably want to go for the Force Recon tree ability instead of the Marksman.
 
@@ -29,7 +29,7 @@ The Force Recon subclass is the aggressive counterpart of the Recon Sniper. Wher
 The new Carbine weapon was specifically created for this class, as the soldier spends most of its time at close to medium ranges. It provides good accuracy at short to medium ranges but suffers from accuracy penalties at longer ranges. The soldier performs quite well with the standard Assault Rifle and the Shotgun as well, so the choice is yours.
 
 
-[h1]The Abilty Tree[/h1]
+[h1]The Ability Tree[/h1]
 
 [b]Squaddie[/b]
 
@@ -62,7 +62,7 @@ Fires two shots at the same target, with the second shot incurring a 15% accurac
 Allows firing a shot that ignores 50% of the high/low cover defense bonus. 4 turn cooldown.
 
 [u]Extreme Prejudice[/u]
-Enhanced overwatch. The operator applies all its skill to fire as many rounds to its targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip. Each consecutive shot incurs a 5% accuracy penalty. Can be activated from Concealment (breaks concealment when firing). Marksman Rifle squadsight applies. 5 turn cooldown.
+Enhanced overwatch. The operator applies all its skill to fire as many rounds to its targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip. Each consecutive shot incurs a 7% accuracy penalty. Can be activated from Concealment (breaks concealment when firing). Marksman Rifle squadsight applies. 5 turn cooldown.
 
 
 [b]Force Recon[/b]
@@ -204,7 +204,7 @@ I know some people don't like the big overhaul they've made so I wanted to make 
 
 [b]Recon Sniper[/b]
 
-The Recon Sniper is the more supporting class of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 5% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot increases the accuracy penalty.
+The Recon Sniper is the more supporting class of the two subclasses. A highly trained marksman that shares some similarities with the Ranger and the Sharpshooter classes. Its main distinctive perk is the Marksman ability, granting the soldier the ability to equip and fire the new Marksman Rifle at Squadsight ranges. With skills such as Reconnoiter and Concealed Shot the soldier can provide aid to the squad and tries to maintain stealth as long as possible. The Pinpoint Accuracy ability allows to fire carefully placed shots at targets behind cover and the Double Shot ability lets the soldier to fire two rounds at a target, using only one AP. Finally the crown jewel of this ability tree is the Colonel level ability, Extreme Prejudice: a special overwatch, where the operator applies all its skill to fire as many rounds to overwatch targets as fast as possible, enabling it to fire multiple rounds at a single or multiple targets, emptying the clip, with each consecutive shot incurring a 7% accuracy penalty. It's somewhat similar to the Sharpshooter's Kill Zone, except no sector is defined, multiple shots at the same target are possible and each shot increases the accuracy penalty.
 
 The Recon Sniper is not a pure sniper even though its name might imply that. The subclass relies on the Marksman Rifle, a longer range version of the Assault Rifle, which provides Squadsight to the soldier. The Marksman Rifle is at its best at medium and just beyond medium ranges but incurs accuracy penalties at extreme ranges, and lacks the punch of the higher caliber sniper rifles. It's quite possible and sensible to use the standard Assault Rifle with the Recon Sniper, although in that case you probably want to go for the Force Recon tree ability instead of the Marksman.
 
@@ -216,9 +216,9 @@ The Force Recon subclass is the aggressive counterpart of the Recon Sniper. Wher
 The new Carbine weapon was specifically created for this class, as the soldier spends most of its time at close to medium ranges. It provides good accuracy at short to medium ranges but suffers from accuracy penalties at longer ranges. The soldier performs quite well with the standard Assault Rifle and the Shotgun as well, so the choice is yours.
 
 
-[h1]The Abilty Tree[/h1]
+[h1]The Ability Tree[/h1]
 
-[b][url=http://steamcommunity.com/workshop/filedetails/discussion/731437305/359543951730337277/]View the full skill tree with descriptions here[/url][/b]
+[b][url=http://steamcommunity.com/workshop/filedetails/discussion/735144645/360670708792075367/]View the full skill tree with descriptions here[/url][/b]
 (The mod description max length is too short for full description)
 
 
@@ -233,7 +233,7 @@ The new Carbine weapon was specifically created for this class, as the soldier s
 [/list]
 
 [b]The accuracy profile, compared to the standard Assault Rifle.
-[url=http://i.imgur.com/SPnwiJv.png]Click here to see the graph[/url][/b]
+[url=http://i.imgur.com/mFOCeng.png]Click here to see the graph[/url][/b]
 
 
 [b]The Marksman Rifle[/b]
@@ -246,7 +246,7 @@ The new Carbine weapon was specifically created for this class, as the soldier s
 [/list]
 
 [b]The accuracy profile, compared to the standard Assault Rifle.
-[url=http://i.imgur.com/6Ps0QNj.png]Click here to see the graph[/url][/b]
+[url=http://i.imgur.com/QKim4Xq.png]Click here to see the graph[/url][/b]
 
 
 [h1]Technical Information[/h1]
@@ -266,3 +266,9 @@ The new Carbine weapon was specifically created for this class, as the soldier s
 [*] The Situational Awareness skill will also trigger if the enemy wanders to your soldier and gets revealed - this is intended.
 [*] Speculative Fire aiming can be a bit tricky, as you can fire behind what you can see but the targeting sphere gets painted over by the fog of war.
 [/list]
+
+------------------------------------------------------------------------------
+
+The Source Code
+Available here: https://github.com/Jusas/XCOM2_ReconSoldierClass
+(should come with the mod package as well)
